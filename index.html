@@ -644,7 +644,7 @@
 
                 <!-- Video Element -->
                 <video id="ufc-video-player" class="w-full h-full object-cover hidden" preload="metadata"
-                    controlsList="nodownload">
+                    controlsList="nodownload" playsinline>
                     <!-- Vídeo de exemplo - deve ser substituído pelo utilizador -->
                     <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
                         type="video/mp4" id="ufc-video-src">
@@ -1174,14 +1174,16 @@
 
         if (ufcVideoOverlay && ufcVideoPlayer) {
             ufcVideoOverlay.addEventListener('click', () => {
+                // Play synchronously to avoid mobile browser restrictions
+                ufcVideoPlayer.play().catch(e => console.warn("Play blocked:", e));
+                
                 // Fade out overlay
                 ufcVideoOverlay.style.opacity = '0';
+                ufcVideoPlayer.classList.remove('hidden');
+                ufcVideoPlayer.setAttribute('controls', 'controls');
 
                 setTimeout(() => {
                     ufcVideoOverlay.style.display = 'none';
-                    ufcVideoPlayer.classList.remove('hidden');
-                    ufcVideoPlayer.setAttribute('controls', 'controls');
-                    ufcVideoPlayer.play();
                 }, 500);
             });
 
