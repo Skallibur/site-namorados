@@ -747,7 +747,7 @@
                 heroSeasons: "3 TEMPORADAS",
                 heroQuote: "\"A cada batida do meu coração, sinto que você é a razão de cada sorriso e de cada sonho realizado. O seu amor é o abrigo onde encontro paz e alegria. E nos seus braços, o mundo torna-se um lugar mágico e seguro. Nunca imaginei que poderia amar assim, com tanta intensidade e entrega. Você é o meu sol, o meu destino e o meu tudo.\"",
                 heroBg: "photo_2026-06-12_13-05-50.jpg",
-                fightVideoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                fightVideoUrl: "video_2026-06-12_13-09-28.mp4",
                 starmapImg: "mapa-estrelas.png",
                 starmapDate: "24 de Abril de 2026",
                 starmapLocation: "Coordenadas do Amor"
@@ -1183,6 +1183,23 @@
                     ufcVideoPlayer.setAttribute('controls', 'controls');
                     ufcVideoPlayer.play();
                 }, 500);
+            });
+
+            ufcVideoPlayer.addEventListener('ended', () => {
+                const winnerOverlay = document.createElement('div');
+                winnerOverlay.className = 'absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-20 opacity-0 transition-opacity duration-1000';
+                winnerOverlay.innerHTML = `
+                    <div class="text-netflix text-lg md:text-xl font-bold tracking-[0.4em] uppercase mb-4 animate-bounce">(Vencedor)</div>
+                    <h3 class="text-5xl md:text-7xl font-bold text-white uppercase italic tracking-wider drop-shadow-[0_0_20px_rgba(229,9,20,0.8)] scale-0 transition-transform duration-1000 delay-500">O AMOR</h3>
+                `;
+                ufcVideoPlayer.parentElement.appendChild(winnerOverlay);
+                
+                requestAnimationFrame(() => {
+                    winnerOverlay.style.opacity = '1';
+                    setTimeout(() => {
+                        winnerOverlay.querySelector('h3').style.transform = 'scale(1)';
+                    }, 100);
+                });
             });
         }
 
