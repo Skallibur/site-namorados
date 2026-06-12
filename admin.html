@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Pedro & Lynda</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================
+           CSS RESET & TOKENS
+        ============================ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --netflix: #E50914;
+            --romantic: #ff2a7a;
+            --bg: #0e0e0e;
+            --surface: #1a1a1a;
+            --surface2: #242424;
+            --surface3: #2e2e2e;
+            --border: #333;
+            --border-hover: #555;
+            --text: #f0f0f0;
+            --text-muted: #888;
+            --text-dim: #aaa;
+            --accent: #E50914;
+            --accent-hover: #c5000f;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --radius: 10px;
+            --radius-sm: 6px;
+            --sidebar-w: 240px;
+            --transition: 0.2s ease;
+            --font: 'Inter', sans-serif;
+        }
+
+        html { font-size: 15px; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ============================
+           PIN OVERLAY
+        ============================ */
+        #pin-overlay {
+            position: fixed; inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 24px;
+        }
+        #pin-overlay.hidden { display: none; }
+        .pin-logo {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: var(--netflix);
+            margin-bottom: 8px;
+        }
+        .pin-title { font-size: 1.1rem; color: var(--text-dim); }
+        .pin-inputs {
+            display: flex; gap: 12px;
+        }
+        .pin-digit {
+            width: 56px; height: 64px;
+            background: var(--surface2);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text);
+            outline: none;
+            caret-color: var(--netflix);
+            transition: border-color var(--transition);
+        }
+        .pin-digit:focus { border-color: var(--netflix); }
+        .pin-error {
+            color: var(--netflix);
+            font-size: 0.85rem;
+            height: 20px;
+            text-align: center;
+        }
+        .pin-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .pin-no-pin-btn {
+            background: none; border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: underline;
+            font-family: var(--font);
+        }
+        .pin-no-pin-btn:hover { color: var(--text); }
+
+        /* ============================
+           LAYOUT
+        ============================ */
+        #sidebar {
+            width: var(--sidebar-w);
+            min-height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        #main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 100vh;
+        }
+        #content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ============================
+           SIDEBAR
+        ============================ */
+        .sidebar-logo {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-logo h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem;
+            color: var(--netflix);
+            line-height: 1;
+        }
+        .sidebar-logo p {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 0;
+        }
+        .nav-section-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 12px 20px 4px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: var(--text-dim);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: all var(--transition);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-family: var(--font);
+            border-left: 3px solid transparent;
+        }
+        .nav-item:hover { background: var(--surface2); color: var(--text); }
+        .nav-item.active {
+            background: rgba(229, 9, 20, 0.1);
+            color: var(--netflix);
+            border-left-color: var(--netflix);
+        }
+        .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .btn-preview {
+            display: flex; align-items: center; gap: 8px;
+            padding: 9px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: var(--font);
+            transition: all var(--transition);
+            text-align: center;
+            justify-content: center;
+        }
+        .btn-preview:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface3); }
+
+        /* ============================
+           TOP BAR
+        ============================ */
+        #topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+        .topbar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+        /* ============================
+           BUTTONS
+        ============================ */
+        .btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 9px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: var(--font);
+            transition: all var(--transition);
+        }
+        .btn-primary {
+            background: var(--netflix);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(229,9,20,0.35); }
+        .btn-secondary {
+            background: var(--surface2);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background: var(--surface3); color: var(--text); border-color: var(--border-hover); }
+        .btn-danger {
+            background: rgba(229,9,20,0.12);
+            color: var(--netflix);
+            border: 1px solid rgba(229,9,20,0.3);
+        }
+        .btn-danger:hover { background: rgba(229,9,20,0.25); }
+        .btn-success {
+            background: rgba(34,197,94,0.15);
+            color: var(--success);
+            border: 1px solid rgba(34,197,94,0.3);
+        }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+        .btn-icon { padding: 7px; border-radius: var(--radius-sm); }
+
+        /* ============================
+           SAVE TOAST
+        ============================ */
+        #save-toast {
+            position: fixed;
+            bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            z-index: 9000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            pointer-events: none;
+        }
+        #save-toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ============================
+           SECTIONS (tab panels)
+        ============================ */
+        .section-panel { display: none; }
+        .section-panel.active { display: block; }
+        .section-heading {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .section-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        /* ============================
+           FORM ELEMENTS
+        ============================ */
+        .form-group { margin-bottom: 20px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            margin-bottom: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .label-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            margin-left: 6px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="password"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 0.9rem;
+            padding: 10px 14px;
+            outline: none;
+            transition: border-color var(--transition);
+            appearance: none;
+        }
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="password"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus { border-color: var(--netflix); }
+
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; }
+
+        textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+        select option { background: var(--surface2); }
+
+        /* Image preview */
+        .img-preview-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/7;
+            background: var(--surface2);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .img-preview-wrap:hover { border-color: var(--netflix); }
+        .img-preview-wrap img {
+            width: 100%; height: 100%; object-fit: cover;
+            position: absolute; inset: 0;
+        }
+        .img-preview-placeholder {
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            color: var(--text-muted); font-size: 0.85rem;
+            pointer-events: none;
+        }
+        .img-preview-placeholder .upload-icon { font-size: 2rem; }
+
+        .url-or-upload {
+            display: flex; gap: 10px; margin-top: 8px; align-items: flex-start;
+        }
+        .url-or-upload input { flex: 1; }
+
+        input[type="file"] { display: none; }
+
+        /* Divider */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 28px 0;
+        }
+
+        /* ============================
+           GALLERY ITEMS
+        ============================ */
+        #gallery-list { display: flex; flex-direction: column; gap: 16px; }
+
+        .gallery-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 16px;
+            align-items: center;
+            transition: border-color var(--transition);
+        }
+        .gallery-card:hover { border-color: var(--border-hover); }
+        .gallery-card-thumb {
+            width: 80px; height: 80px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            background: var(--surface3);
+            display: block;
+        }
+        .gallery-card-thumb-placeholder {
+            width: 80px; height: 80px;
+            border-radius: var(--radius-sm);
+            background: var(--surface3);
+            border: 1px dashed var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+        }
+        .gallery-card-body { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .gallery-card-actions { display: flex; flex-direction: column; gap: 6px; }
+
+        .add-gallery-btn {
+            border: 2px dashed var(--border);
+            background: none;
+            border-radius: var(--radius);
+            padding: 20px;
+            width: 100%;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .add-gallery-btn:hover { border-color: var(--netflix); color: var(--netflix); background: rgba(229,9,20,0.05); }
+
+        /* ============================
+           TIMELINE ITEMS
+        ============================ */
+        #timeline-list { display: flex; flex-direction: column; gap: 16px; }
+
+        .timeline-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: border-color var(--transition);
+        }
+        .timeline-card:hover { border-color: var(--border-hover); }
+        .timeline-card-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .timeline-card-num {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--netflix);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .timeline-card-actions { display: flex; gap: 6px; }
+
+        /* ============================
+           LETTER PARAGRAPHS
+        ============================ */
+        #letter-paragraphs { display: flex; flex-direction: column; gap: 12px; }
+        .para-row {
+            display: flex; gap: 10px; align-items: flex-start;
+        }
+        .para-row textarea { flex: 1; }
+
+        /* ============================
+           COLOR PICKER (accent)
+        ============================ */
+        .accent-picker { display: flex; gap: 10px; }
+        .accent-option {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .accent-option.selected,
+        .accent-option:hover { border-color: white; transform: scale(1.15); }
+
+        /* ============================
+           SETTINGS SECTION
+        ============================ */
+        .settings-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+        }
+        .settings-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+        .settings-card p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        .pin-set-row { display: flex; gap: 10px; align-items: flex-end; }
+        .pin-set-row .form-group { flex: 1; margin-bottom: 0; }
+
+        /* ============================
+           DRAG HANDLE
+        ============================ */
+        .drag-handle {
+            cursor: grab; color: var(--text-muted); padding: 4px;
+            user-select: none; font-size: 1rem;
+        }
+        .drag-handle:active { cursor: grabbing; }
+
+        /* ============================
+           RESPONSIVE SIDEBAR TOGGLE
+        ============================ */
+        #sidebar-toggle {
+            display: none;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        @media (max-width: 768px) {
+            #sidebar-toggle { display: block; }
+            #sidebar {
+                position: fixed; left: -100%; top: 0; z-index: 200;
+                height: 100vh;
+                transition: left 0.3s ease;
+            }
+            #sidebar.open { left: 0; }
+            #sidebar-overlay {
+                display: none;
+                position: fixed; inset: 0; z-index: 199;
+                background: rgba(0,0,0,0.6);
+            }
+            #sidebar.open ~ #main #sidebar-overlay { display: block; }
+        }
+
+        #sidebar-overlay { display: none; }
+
+        /* Upload thumb preview in gallery */
+        .gallery-img-upload-label {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 12px;
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-family: var(--font);
+            font-weight: 600;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .gallery-img-upload-label:hover { border-color: var(--border-hover); color: var(--text); }
+
+        /* ============================
+           SCROLLBAR
+        ============================ */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--surface); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+    </style>
+</head>
+<body>
+
+<!-- ============================
+     PIN OVERLAY
+============================ -->
+<div id="pin-overlay">
+    <div class="pin-logo">Admin</div>
+    <div class="pin-title">Introduza o PIN para aceder</div>
+    <div class="pin-inputs">
+        <input class="pin-digit" id="pin-0" type="password" maxlength="1" inputmode="numeric" autocomplete="off">
+        <input class="pin-digit" id="pin-1" type="password" maxlength="1" inputmode="numeric" autocomplete="off">
+        <input class="pin-digit" id="pin-2" type="password" maxlength="1" inputmode="numeric" autocomplete="off">
+        <input class="pin-digit" id="pin-3" type="password" maxlength="1" inputmode="numeric" autocomplete="off">
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+    <div class="pin-hint">PIN padrão: <strong>1234</strong> — pode alterar nas Definições</div>
+    <button class="pin-no-pin-btn" id="pin-skip-btn">Entrar sem PIN</button>
+</div>
+
+<!-- ============================
+     SAVE TOAST
+============================ -->
+<div id="save-toast">✓ Guardado com sucesso!</div>
+
+<!-- ============================
+     SIDEBAR
+============================ -->
+<nav id="sidebar">
+    <div class="sidebar-logo">
+        <h1>Pedro & Lynda</h1>
+        <p>Painel de Administração</p>
+    </div>
+
+    <div class="sidebar-nav">
+        <div class="nav-section-label">Conteúdo</div>
+        <button class="nav-item active" data-tab="general"><span class="nav-icon">🏠</span> Geral</button>
+        <button class="nav-item" data-tab="gallery"><span class="nav-icon">📸</span> Galeria</button>
+        <button class="nav-item" data-tab="timeline"><span class="nav-icon">📅</span> Linha do Tempo</button>
+        <button class="nav-item" data-tab="letter"><span class="nav-icon">💌</span> Carta de Amor</button>
+        <button class="nav-item" data-tab="quiz"><span class="nav-icon">🧠</span> Quiz</button>
+        <div class="nav-section-label">Sistema</div>
+        <button class="nav-item" data-tab="settings"><span class="nav-icon">⚙️</span> Definições</button>
+    </div>
+
+    <div class="sidebar-footer">
+        <a href="index.html" target="_blank" class="btn-preview">🔗 Ver Site</a>
+    </div>
+</nav>
+
+<!-- ============================
+     MAIN
+============================ -->
+<div id="main">
+    <div id="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <button id="sidebar-toggle">☰</button>
+            <span class="topbar-title" id="topbar-label">Geral</span>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn btn-secondary btn-sm" id="reset-btn">↺ Defaults</button>
+            <button class="btn btn-primary" id="save-btn">💾 Guardar</button>
+        </div>
+    </div>
+
+    <div id="sidebar-overlay"></div>
+
+    <div id="content">
+
+        <!-- ============================
+             TAB: GENERAL
+        ============================ -->
+        <div class="section-panel active" id="panel-general">
+            <h2 class="section-heading">Informações Gerais</h2>
+            <p class="section-desc">Configure os dados principais que aparecem no site.</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="g-name1">Nome 1 (autor) <span class="label-hint">ex: Pedro</span></label>
+                    <input type="text" id="g-name1" placeholder="Pedro">
+                </div>
+                <div class="form-group">
+                    <label for="g-name2">Nome 2 (parceiro/a) <span class="label-hint">ex: Lynda</span></label>
+                    <input type="text" id="g-name2" placeholder="Lynda">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="g-startDate">Data de início do relacionamento</label>
+                <input type="date" id="g-startDate">
+            </div>
+
+            <hr class="divider">
+
+            <div class="form-group">
+                <label for="g-heroTitle">Título Principal (Hero)</label>
+                <input type="text" id="g-heroTitle" placeholder="Pedro e Lynda">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="g-heroDateLabel">Etiqueta de data no Hero</label>
+                    <input type="text" id="g-heroDateLabel" placeholder="24/04/2026">
+                </div>
+                <div class="form-group">
+                    <label for="g-heroSeasons">Texto de temporadas</label>
+                    <input type="text" id="g-heroSeasons" placeholder="3 TEMPORADAS">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="g-heroQuote">Frase / Sinopse do Hero</label>
+                <textarea id="g-heroQuote" rows="4" placeholder="A nossa história..."></textarea>
+            </div>
+
+            <hr class="divider">
+
+            <div class="form-group">
+                <label for="g-fightVideoUrl">Link do Vídeo do Combate (UFC)</label>
+                <input type="text" id="g-fightVideoUrl" placeholder="URL do vídeo (.mp4) ou caminho local (ex: video.mp4)">
+            </div>
+
+            <hr class="divider">
+
+            <div class="form-group">
+                <label>Imagem de Fundo do Hero</label>
+                <div class="img-preview-wrap" id="hero-img-preview" style="cursor:default;">
+                    <div class="img-preview-placeholder" id="hero-img-placeholder">
+                        <span class="upload-icon">🖼️</span>
+                        <span>Sem imagem</span>
+                    </div>
+                </div>
+                <div class="url-or-upload">
+                    <input type="text" id="g-heroBg" placeholder="URL da imagem (https://...)">
+                    <label class="gallery-img-upload-label" for="hero-file-input">📁 Upload</label>
+                    <input type="file" id="hero-file-input" accept="image/*">
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <h3 class="section-heading" style="font-size:1.2rem; margin-top:20px;">Mapa das Estrelas</h3>
+            <div class="form-group">
+                <label for="g-starmapImg">Nome da Imagem do Mapa (ex: mapa-estrelas.png)</label>
+                <input type="text" id="g-starmapImg" placeholder="mapa-estrelas.png">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="g-starmapDate">Data no Mapa</label>
+                    <input type="text" id="g-starmapDate" placeholder="24 de Abril de 2026">
+                </div>
+                <div class="form-group">
+                    <label for="g-starmapLocation">Localização</label>
+                    <input type="text" id="g-starmapLocation" placeholder="Coordenadas do Amor">
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================
+             TAB: GALLERY
+        ============================ -->
+        <div class="section-panel" id="panel-gallery">
+            <h2 class="section-heading">Galeria de Momentos</h2>
+            <p class="section-desc">Adicione, edite ou remova fotos do álbum de polaroides.</p>
+
+            <div id="gallery-list"></div>
+
+            <button class="add-gallery-btn" id="add-gallery-btn" style="margin-top:16px;">
+                + Adicionar Foto
+            </button>
+        </div>
+
+        <!-- ============================
+             TAB: TIMELINE
+        ============================ -->
+        <div class="section-panel" id="panel-timeline">
+            <h2 class="section-heading">Linha do Tempo</h2>
+            <p class="section-desc">Edite os marcos da vossa história de amor.</p>
+
+            <div id="timeline-list"></div>
+
+            <button class="add-gallery-btn" id="add-timeline-btn" style="margin-top:16px;">
+                + Adicionar Evento
+            </button>
+        </div>
+
+        <!-- ============================
+             TAB: LETTER
+        ============================ -->
+        <div class="section-panel" id="panel-letter">
+            <h2 class="section-heading">Carta de Amor</h2>
+            <p class="section-desc">Escreva a mensagem que aparece dentro do envelope.</p>
+
+            <div class="form-group">
+                <label for="l-salutation">Saudação <span class="label-hint">ex: Minha amada Lynda,</span></label>
+                <input type="text" id="l-salutation" placeholder="Minha amada Lynda,">
+            </div>
+
+            <div class="form-group">
+                <label>Parágrafos <span class="label-hint">um por campo</span></label>
+                <div id="letter-paragraphs"></div>
+                <button class="add-gallery-btn" id="add-para-btn" style="margin-top:10px;padding:12px;">
+                    + Adicionar Parágrafo
+                </button>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="l-signoff">Fecho <span class="label-hint">ex: Com todo o meu amor,</span></label>
+                    <input type="text" id="l-signoff" placeholder="Com todo o meu amor,">
+                </div>
+                <div class="form-group">
+                    <label for="l-signature">Assinatura</label>
+                    <input type="text" id="l-signature" placeholder="Pedro">
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================
+             TAB: QUIZ
+        ============================ -->
+        <div class="section-panel" id="panel-quiz">
+            <h2 class="section-heading">Quiz do Casal</h2>
+            <p class="section-desc">Adicione, edite ou remova perguntas. Cada pergunta tem 4 opções e uma resposta correta.</p>
+
+            <div id="quiz-questions-list"></div>
+
+            <button class="add-gallery-btn" id="add-question-btn" style="margin-top:16px;padding:14px;">
+                + Adicionar Pergunta
+            </button>
+        </div>
+
+        <!-- ============================
+             TAB: SETTINGS
+        ============================ -->
+        <div class="section-panel" id="panel-settings">
+            <h2 class="section-heading">Definições</h2>
+            <p class="section-desc">Configurações do painel de administração.</p>
+
+            <div class="settings-card">
+                <h3>🔐 Proteção por PIN</h3>
+                <p>Defina um PIN de 4 dígitos para proteger este painel. Deixe em branco para desativar.</p>
+                <div class="pin-set-row">
+                    <div class="form-group">
+                        <label for="s-pin">Novo PIN (4 dígitos)</label>
+                        <input type="password" id="s-pin" maxlength="4" inputmode="numeric" placeholder="Deixe vazio para sem PIN">
+                    </div>
+                    <div class="form-group">
+                        <label for="s-pin2">Confirmar PIN</label>
+                        <input type="password" id="s-pin2" maxlength="4" inputmode="numeric" placeholder="Repetir PIN">
+                    </div>
+                    <button class="btn btn-secondary" id="save-pin-btn" style="margin-bottom:20px;">Definir PIN</button>
+                </div>
+                <div id="pin-status" style="font-size:0.82rem; color: var(--text-muted);"></div>
+            </div>
+
+            <div class="settings-card" style="border-color: rgba(229,9,20,0.3);">
+                <h3 style="color:var(--netflix);">⚠️ Repor Configuração</h3>
+                <p>Apaga todas as alterações e restaura os valores originais do site. Esta ação não pode ser desfeita.</p>
+                <button class="btn btn-danger" id="full-reset-btn">Repor tudo para os Defaults</button>
+            </div>
+
+            <div class="settings-card">
+                <h3>💾 Exportar / Importar</h3>
+                <p>Faça backup da configuração ou restaure a partir de um ficheiro.</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn btn-secondary" id="export-btn">↓ Exportar JSON</button>
+                    <label class="btn btn-secondary" for="import-file">↑ Importar JSON</label>
+                    <input type="file" id="import-file" accept=".json">
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// =============================================
+// DEFAULT CONFIGURATION (same as index.html)
+// =============================================
+const DEFAULT_CONFIG = {
+    general: {
+        name1: "Pedro",
+        name2: "Lynda",
+        startDate: "2026-04-24",
+        heroTitle: "Pedro e Lynda",
+        heroDateLabel: "24/04/2026",
+        heroSeasons: "3 TEMPORADAS",
+        heroQuote: "\"A cada batida do meu coração, sinto que você é a razão de cada sorriso e de cada sonho realizado. O seu amor é o abrigo onde encontro paz e alegria. E nos seus braços, o mundo torna-se um lugar mágico e seguro. Nunca imaginei que poderia amar assim, com tanta intensidade e entrega. Você é o meu sol, o meu destino e o meu tudo.\"",
+        heroBg: "https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?q=80&w=2000&auto=format&fit=crop",
+    },
+    gallery: [
+        { img: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=600&auto=format&fit=crop", caption: "O nosso sorriso favorito" },
+        { img: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=600&auto=format&fit=crop", caption: "Aventuras inesquecíveis" },
+        { img: "https://images.unsplash.com/photo-1507504031003-b417219a0fde?q=80&w=600&auto=format&fit=crop", caption: "Paz no seu abraço" },
+        { img: "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?q=80&w=600&auto=format&fit=crop", caption: "Beijos e mais beijos" },
+        { img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=600&auto=format&fit=crop", caption: "Dias de Sol consigo" },
+        { img: "https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=600&auto=format&fit=crop", caption: "O nosso lugar secreto" }
+    ],
+    timeline: [
+        { title: "O Primeiro Contacto", dateLabel: "Abril de 2026", description: "O momento em que os nossos olhares se cruzaram. A partir dali, soube que a minha vida iria mudar para sempre.", accent: "netflix", side: "left" },
+        { title: "O Primeiro Beijo", dateLabel: "A Nossa Data", description: "O mundo parou. Foi como a cena final do filme mais perfeito, mas para nós era apenas o começo.", accent: "romantic", side: "right" },
+        { title: "O Pedido Oficial", dateLabel: "24/04/2026", description: "O sim mais feliz da minha vida. Oficializámos o nosso amor e decidimos maratonar a vida juntos.", accent: "white", side: "left" }
+    ],
+    letter: {
+        salutation: "Minha amada Lynda,",
+        paragraphs: [
+            "Escrevo estas linhas não como um guião decorado, mas com a sinceridade de quem encontrou a protagonista perfeita para a história da sua vida.",
+            "Desde aquele 24 de Abril de 2026, cada dia ao seu lado tem sido uma jornada incrível. Trouxe cor, banda sonora e muita paixão para a minha rotina. As partes difíceis da vida parecem apenas plot twists que superamos juntos, e os momentos felizes são a nossa melhor temporada.",
+            "Neste Dia dos Namorados, quero renovar a minha subscrição com o seu coração. Prometo amá-la nos episódios agitados e nas pausas silenciosas. É extraordinária, linda e a mulher dos meus sonhos."
+        ],
+        signoff: "Com todo o meu amor,",
+        signature: "Pedro"
+    },
+    quiz: [
+        {
+            question: "Onde foi o nosso primeiro rola (treino)?",
+            options: ["Na academia antiga", "No campeonato", "Numa aula especial", "Na praia"],
+            correct: 0
+        },
+        {
+            question: "Quem finalizou quem primeiro?",
+            options: ["Pedro", "Lynda", "Deu empate", "O mestre parou"],
+            correct: 1
+        },
+        {
+            question: "Qual é a nossa finalização de assinatura (como casal)?",
+            options: ["Mata-leão", "Triângulo", "Chave de braço", "Abraço de Urso"],
+            correct: 3
+        }
+    ]
+};
+
+// =============================================
+// STATE
+// =============================================
+let config = {};
+
+function deepCopy(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+function loadConfig() {
+    try {
+        const s = localStorage.getItem('pl_config');
+        if (s) {
+            const parsed = JSON.parse(s);
+            if (!parsed.quiz || parsed.quiz.length === 0) {
+                parsed.quiz = deepCopy(DEFAULT_CONFIG.quiz);
+            }
+            return parsed;
+        }
+    } catch(e) {}
+    return deepCopy(DEFAULT_CONFIG);
+}
+
+function saveConfig() {
+    try {
+        localStorage.setItem('pl_config', JSON.stringify(config));
+        showToast();
+    } catch(e) {
+        if (e.name === 'QuotaExceededError') {
+            alert('Armazenamento local cheio! Algumas imagens podem ser muito grandes. Tente usar URLs em vez de fazer upload de ficheiros.');
+        }
+    }
+}
+
+// =============================================
+// PIN SYSTEM
+// =============================================
+const PIN_KEY = 'pl_admin_pin';
+function getPin() { return localStorage.getItem(PIN_KEY) || '1234'; }
+function setPin(p) { if (p) localStorage.setItem(PIN_KEY, p); else localStorage.removeItem(PIN_KEY); }
+function pinEnabled() { return !!localStorage.getItem(PIN_KEY); }
+
+function initPin() {
+    const overlay = document.getElementById('pin-overlay');
+    const skipBtn = document.getElementById('pin-skip-btn');
+    const errorEl = document.getElementById('pin-error');
+    const digits = [0,1,2,3].map(i => document.getElementById(`pin-${i}`));
+
+    // If session already unlocked
+    if (sessionStorage.getItem('pl_admin_unlocked') === '1') {
+        overlay.classList.add('hidden');
+        return;
+    }
+
+    // If no pin set
+    if (!pinEnabled()) {
+        overlay.classList.add('hidden');
+        return;
+    }
+
+    function checkPin() {
+        const entered = digits.map(d => d.value).join('');
+        if (entered.length < 4) return;
+        if (entered === getPin()) {
+            sessionStorage.setItem('pl_admin_unlocked', '1');
+            overlay.classList.add('hidden');
+        } else {
+            errorEl.textContent = 'PIN incorreto. Tente novamente.';
+            digits.forEach(d => { d.value = ''; d.style.borderColor = '#E50914'; });
+            setTimeout(() => { digits.forEach(d => d.style.borderColor = ''); errorEl.textContent = ''; }, 1500);
+            digits[0].focus();
+        }
+    }
+
+    digits.forEach((d, i) => {
+        d.addEventListener('input', () => {
+            d.value = d.value.replace(/\D/g, '');
+            if (d.value && i < 3) digits[i+1].focus();
+            checkPin();
+        });
+        d.addEventListener('keydown', e => {
+            if (e.key === 'Backspace' && !d.value && i > 0) digits[i-1].focus();
+        });
+    });
+
+    skipBtn.addEventListener('click', () => {
+        if (confirm('Entrar sem verificação de PIN?')) {
+            sessionStorage.setItem('pl_admin_unlocked', '1');
+            overlay.classList.add('hidden');
+        }
+    });
+
+    digits[0].focus();
+}
+
+// =============================================
+// TABS
+// =============================================
+const TAB_LABELS = { general: 'Geral', gallery: 'Galeria', timeline: 'Linha do Tempo', letter: 'Carta de Amor', settings: 'Definições' };
+
+function initTabs() {
+    document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`panel-${tab}`).classList.add('active');
+            document.getElementById('topbar-label').textContent = TAB_LABELS[tab] || tab;
+            closeSidebar();
+        });
+    });
+}
+
+// =============================================
+// SIDEBAR TOGGLE (mobile)
+// =============================================
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+}
+document.getElementById('sidebar-toggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+});
+document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
+
+// =============================================
+// TOAST
+// =============================================
+let toastTimer;
+function showToast(msg) {
+    const t = document.getElementById('save-toast');
+    if (msg) t.textContent = msg;
+    else t.textContent = '✓ Guardado com sucesso!';
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// =============================================
+// POPULATE GENERAL
+// =============================================
+function populateGeneral() {
+    const g = config.general;
+    document.getElementById('g-name1').value = g.name1 || '';
+    document.getElementById('g-name2').value = g.name2 || '';
+    document.getElementById('g-startDate').value = g.startDate || '';
+    document.getElementById('g-heroTitle').value = g.heroTitle || '';
+    document.getElementById('g-heroDateLabel').value = g.heroDateLabel || '';
+    document.getElementById('g-heroSeasons').value = g.heroSeasons || '';
+    document.getElementById('g-heroQuote').value = g.heroQuote || '';
+    document.getElementById('g-fightVideoUrl').value = g.fightVideoUrl || '';
+    document.getElementById('g-starmapImg').value = g.starmapImg || '';
+    document.getElementById('g-starmapDate').value = g.starmapDate || '';
+    document.getElementById('g-starmapLocation').value = g.starmapLocation || '';
+    document.getElementById('g-heroBg').value = g.heroBg || '';
+    updateHeroPreview(g.heroBg || '');
+}
+
+function updateHeroPreview(src) {
+    const wrap = document.getElementById('hero-img-preview');
+    const placeholder = document.getElementById('hero-img-placeholder');
+    let img = wrap.querySelector('img');
+    if (src) {
+        placeholder.style.display = 'none';
+        if (!img) { img = document.createElement('img'); wrap.appendChild(img); }
+        img.src = src;
+        img.alt = 'Hero preview';
+    } else {
+        placeholder.style.display = 'flex';
+        if (img) img.remove();
+    }
+}
+
+document.getElementById('g-heroBg').addEventListener('input', e => updateHeroPreview(e.target.value));
+document.getElementById('hero-file-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    // Store the filename — works when both files are in the same project folder
+    document.getElementById('g-heroBg').value = file.name;
+    updateHeroPreview(file.name);
+    showToast(`Ficheiro "${file.name}" selecionado. Certifique-se que está na pasta do projeto.`);
+});
+
+function readGeneral() {
+    config.general = {
+        name1: document.getElementById('g-name1').value.trim() || 'Pedro',
+        name2: document.getElementById('g-name2').value.trim() || 'Lynda',
+        startDate: document.getElementById('g-startDate').value || '2026-04-24',
+        heroTitle: document.getElementById('g-heroTitle').value.trim(),
+        heroDateLabel: document.getElementById('g-heroDateLabel').value.trim(),
+        heroSeasons: document.getElementById('g-heroSeasons').value.trim(),
+        heroQuote: document.getElementById('g-heroQuote').value.trim(),
+        fightVideoUrl: document.getElementById('g-fightVideoUrl').value.trim(),
+        starmapImg: document.getElementById('g-starmapImg').value.trim(),
+        starmapDate: document.getElementById('g-starmapDate').value.trim(),
+        starmapLocation: document.getElementById('g-starmapLocation').value.trim(),
+        heroBg: document.getElementById('g-heroBg').value.trim(),
+    };
+}
+
+// =============================================
+// GALLERY
+// =============================================
+function populateGallery() {
+    const list = document.getElementById('gallery-list');
+    list.innerHTML = '';
+    (config.gallery || []).forEach((item, i) => addGalleryCard(item, i));
+}
+
+function addGalleryCard(item, index) {
+    const list = document.getElementById('gallery-list');
+    const card = document.createElement('div');
+    card.className = 'gallery-card';
+    card.dataset.index = index;
+
+    const thumbSrc = item.img || '';
+    const thumbHTML = thumbSrc
+        ? `<img class="gallery-card-thumb" src="${thumbSrc}" alt="foto">`
+        : `<div class="gallery-card-thumb-placeholder">📷</div>`;
+
+    card.innerHTML = `
+        ${thumbHTML}
+        <div class="gallery-card-body">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <input type="text" class="gc-img" placeholder="URL da imagem" value="${escHtml(item.img || '')}">
+                <label class="gallery-img-upload-label">📁 <input type="file" accept="image/*" style="display:none" class="gc-file-input"></label>
+            </div>
+            <input type="text" class="gc-caption" placeholder="Legenda da foto" value="${escHtml(item.caption || '')}">
+        </div>
+        <div class="gallery-card-actions">
+            <button class="btn btn-danger btn-sm btn-icon gc-remove" title="Remover">🗑</button>
+            <button class="btn btn-secondary btn-sm btn-icon gc-up" title="Mover para cima" ${index === 0 ? 'disabled' : ''}>↑</button>
+            <button class="btn btn-secondary btn-sm btn-icon gc-down" title="Mover para baixo">↓</button>
+        </div>
+    `;
+
+    // Thumb preview helper
+    function updateCardThumb(card, src) {
+        const thumb = card.querySelector('.gallery-card-thumb, .gallery-card-thumb-placeholder');
+        if (src) {
+            const img = document.createElement('img');
+            img.className = 'gallery-card-thumb';
+            img.src = src;
+            img.onerror = () => { img.style.display='none'; }
+            if (thumb) thumb.replaceWith(img);
+            else card.insertAdjacentElement('afterbegin', img);
+        }
+    }
+
+    // Thumb update on URL/filename input
+    const imgInput = card.querySelector('.gc-img');
+    imgInput.addEventListener('input', () => {
+        updateCardThumb(card, imgInput.value);
+    });
+
+    // File picker — stores the FILENAME only (not base64)
+    // This works because the files are in the same project folder as index.html
+    card.querySelector('.gc-file-input').addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        // Store just the filename so the site finds it in the project folder
+        imgInput.value = file.name;
+        updateCardThumb(card, file.name);
+        showToast(`Ficheiro "${file.name}" selecionado. Certifique-se que está na pasta do projeto.`);
+    });
+
+    card.querySelector('.gc-remove').addEventListener('click', () => {
+        readGallery();
+        config.gallery.splice(parseInt(card.dataset.index), 1);
+        populateGallery();
+    });
+
+    card.querySelector('.gc-up').addEventListener('click', () => {
+        readGallery();
+        const idx = parseInt(card.dataset.index);
+        if (idx > 0) { [config.gallery[idx-1], config.gallery[idx]] = [config.gallery[idx], config.gallery[idx-1]]; populateGallery(); }
+    });
+
+    card.querySelector('.gc-down').addEventListener('click', () => {
+        readGallery();
+        const idx = parseInt(card.dataset.index);
+        if (idx < config.gallery.length - 1) { [config.gallery[idx+1], config.gallery[idx]] = [config.gallery[idx], config.gallery[idx+1]]; populateGallery(); }
+    });
+
+    list.appendChild(card);
+}
+
+function readGallery() {
+    config.gallery = [];
+    document.querySelectorAll('.gallery-card').forEach(card => {
+        config.gallery.push({
+            img: card.querySelector('.gc-img').value.trim(),
+            caption: card.querySelector('.gc-caption').value.trim()
+        });
+    });
+}
+
+document.getElementById('add-gallery-btn').addEventListener('click', () => {
+    readGallery();
+    config.gallery.push({ img: '', caption: '' });
+    populateGallery();
+});
+
+// =============================================
+// TIMELINE
+// =============================================
+const ACCENT_COLORS = { netflix: '#E50914', romantic: '#ff2a7a', white: '#d1d5db' };
+
+function populateTimeline() {
+    const list = document.getElementById('timeline-list');
+    list.innerHTML = '';
+    (config.timeline || []).forEach((item, i) => addTimelineCard(item, i));
+}
+
+function addTimelineCard(item, index) {
+    const list = document.getElementById('timeline-list');
+    const card = document.createElement('div');
+    card.className = 'timeline-card';
+    card.dataset.index = index;
+
+    const accentOptions = Object.entries(ACCENT_COLORS).map(([key, col]) =>
+        `<div class="accent-option ${item.accent === key ? 'selected' : ''}" data-accent="${key}" style="background:${col}" title="${key}"></div>`
+    ).join('');
+
+    card.innerHTML = `
+        <div class="timeline-card-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="timeline-card-num">${index + 1}</div>
+                <span style="font-size:0.85rem;color:var(--text-muted);">Evento #${index + 1}</span>
+            </div>
+            <div class="timeline-card-actions">
+                <button class="btn btn-secondary btn-sm btn-icon tl-up" ${index === 0 ? 'disabled' : ''} title="Mover para cima">↑</button>
+                <button class="btn btn-secondary btn-sm btn-icon tl-down" title="Mover para baixo">↓</button>
+                <button class="btn btn-danger btn-sm btn-icon tl-remove" title="Remover">🗑</button>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" class="tl-title" value="${escHtml(item.title || '')}" placeholder="Nome do evento">
+            </div>
+            <div class="form-group">
+                <label>Data / Etiqueta</label>
+                <input type="text" class="tl-date" value="${escHtml(item.dateLabel || '')}" placeholder="Abril de 2026">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Descrição</label>
+            <textarea class="tl-desc" rows="2" placeholder="Descrição do momento...">${escHtml(item.description || '')}</textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Cor de Destaque</label>
+                <div class="accent-picker">${accentOptions}</div>
+            </div>
+            <div class="form-group">
+                <label for="tl-side-${index}">Posição</label>
+                <select class="tl-side" id="tl-side-${index}">
+                    <option value="left" ${item.side === 'left' ? 'selected' : ''}>Esquerda</option>
+                    <option value="right" ${item.side === 'right' ? 'selected' : ''}>Direita</option>
+                </select>
+            </div>
+        </div>
+    `;
+
+    card.querySelectorAll('.accent-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+            card.querySelectorAll('.accent-option').forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+        });
+    });
+
+    card.querySelector('.tl-remove').addEventListener('click', () => {
+        readTimeline();
+        config.timeline.splice(parseInt(card.dataset.index), 1);
+        populateTimeline();
+    });
+
+    card.querySelector('.tl-up').addEventListener('click', () => {
+        readTimeline();
+        const idx = parseInt(card.dataset.index);
+        if (idx > 0) { [config.timeline[idx-1], config.timeline[idx]] = [config.timeline[idx], config.timeline[idx-1]]; populateTimeline(); }
+    });
+
+    card.querySelector('.tl-down').addEventListener('click', () => {
+        readTimeline();
+        const idx = parseInt(card.dataset.index);
+        if (idx < config.timeline.length - 1) { [config.timeline[idx+1], config.timeline[idx]] = [config.timeline[idx], config.timeline[idx+1]]; populateTimeline(); }
+    });
+
+    list.appendChild(card);
+}
+
+function readTimeline() {
+    config.timeline = [];
+    document.querySelectorAll('.timeline-card').forEach(card => {
+        const selectedAccent = card.querySelector('.accent-option.selected');
+        config.timeline.push({
+            title: card.querySelector('.tl-title').value.trim(),
+            dateLabel: card.querySelector('.tl-date').value.trim(),
+            description: card.querySelector('.tl-desc').value.trim(),
+            accent: selectedAccent ? selectedAccent.dataset.accent : 'netflix',
+            side: card.querySelector('.tl-side').value
+        });
+    });
+}
+
+document.getElementById('add-timeline-btn').addEventListener('click', () => {
+    readTimeline();
+    const isEven = config.timeline.length % 2 === 0;
+    config.timeline.push({ title: '', dateLabel: '', description: '', accent: 'netflix', side: isEven ? 'left' : 'right' });
+    populateTimeline();
+});
+
+// =============================================
+// LETTER
+// =============================================
+function populateLetter() {
+    const l = config.letter;
+    document.getElementById('l-salutation').value = l.salutation || '';
+    document.getElementById('l-signoff').value = l.signoff || '';
+    document.getElementById('l-signature').value = l.signature || '';
+    const paras = document.getElementById('letter-paragraphs');
+    paras.innerHTML = '';
+    (l.paragraphs || []).forEach((p, i) => addParagraphRow(p, i));
+}
+
+function addParagraphRow(text, index) {
+    const paras = document.getElementById('letter-paragraphs');
+    const row = document.createElement('div');
+    row.className = 'para-row';
+    row.innerHTML = `
+        <textarea rows="3" class="para-text" placeholder="Escreva um parágrafo...">${escHtml(text || '')}</textarea>
+        <button class="btn btn-danger btn-sm btn-icon para-remove" style="margin-top:4px;" title="Remover">🗑</button>
+    `;
+    row.querySelector('.para-remove').addEventListener('click', () => row.remove());
+    paras.appendChild(row);
+}
+
+document.getElementById('add-para-btn').addEventListener('click', () => {
+    const paras = document.getElementById('letter-paragraphs');
+    addParagraphRow('', paras.children.length);
+});
+
+function readLetter() {
+    config.letter = {
+        salutation: document.getElementById('l-salutation').value.trim(),
+        paragraphs: Array.from(document.querySelectorAll('.para-text')).map(t => t.value.trim()).filter(Boolean),
+        signoff: document.getElementById('l-signoff').value.trim(),
+        signature: document.getElementById('l-signature').value.trim()
+    };
+}
+
+// =============================================
+// SETTINGS
+// =============================================
+function initSettings() {
+    const pinStatus = document.getElementById('pin-status');
+    const updateStatus = () => {
+        pinStatus.textContent = pinEnabled()
+            ? `✓ PIN ativo (${getPin().replace(/./g, '●')})`
+            : '○ Sem PIN — o painel está acessível a qualquer pessoa.';
+    };
+    updateStatus();
+
+    document.getElementById('save-pin-btn').addEventListener('click', () => {
+        const p1 = document.getElementById('s-pin').value;
+        const p2 = document.getElementById('s-pin2').value;
+        if (!p1 && !p2) {
+            if (confirm('Remover proteção por PIN?')) {
+                setPin('');
+                updateStatus();
+                showToast('PIN removido');
+            }
+            return;
+        }
+        if (!/^\d{4}$/.test(p1)) { alert('O PIN deve ter exatamente 4 dígitos numéricos.'); return; }
+        if (p1 !== p2) { alert('Os PINs não coincidem.'); return; }
+        setPin(p1);
+        document.getElementById('s-pin').value = '';
+        document.getElementById('s-pin2').value = '';
+        updateStatus();
+        showToast('PIN definido');
+    });
+
+    document.getElementById('full-reset-btn').addEventListener('click', () => {
+        if (confirm('⚠️ Tem a certeza? Todas as alterações serão perdidas e o site voltará ao conteúdo original.')) {
+            config = deepCopy(DEFAULT_CONFIG);
+            localStorage.setItem('pl_config', JSON.stringify(config));
+            populateAll();
+            showToast('Configuração reposta!');
+        }
+    });
+
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        if (confirm('Repor para os valores por defeito?')) {
+            config = deepCopy(DEFAULT_CONFIG);
+            localStorage.setItem('pl_config', JSON.stringify(config));
+            populateAll();
+            showToast('Configuração reposta!');
+        }
+    });
+
+    // Export
+    document.getElementById('export-btn').addEventListener('click', () => {
+        readAll();
+        const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url;
+        a.download = 'pedro-lynda-config.json'; a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // Import
+    document.getElementById('import-file').addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            try {
+                const imported = JSON.parse(ev.target.result);
+                if (imported.general && imported.gallery && imported.timeline && imported.letter) {
+                    config = imported;
+                    localStorage.setItem('pl_config', JSON.stringify(config));
+                    populateAll();
+                    showToast('Configuração importada!');
+                } else {
+                    alert('Ficheiro JSON inválido. Verifique o formato.');
+                }
+            } catch(err) {
+                alert('Erro ao ler o ficheiro: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    });
+}
+
+// =============================================
+// READ / POPULATE ALL
+// =============================================
+function readAll() {
+    readGeneral();
+    readGallery();
+    readTimeline();
+    readLetter();
+    readQuiz();
+}
+
+function populateAll() {
+    populateGeneral();
+    populateGallery();
+    populateTimeline();
+    populateLetter();
+    populateQuiz();
+}
+
+// =============================================
+// SAVE BUTTON
+// =============================================
+document.getElementById('save-btn').addEventListener('click', () => {
+    readAll();
+    saveConfig();
+});
+
+// =============================================
+// QUIZ
+// =============================================
+function populateQuiz() {
+    const list = document.getElementById('quiz-questions-list');
+    list.innerHTML = '';
+    (config.quiz || []).forEach((q, i) => addQuizCard(q, i));
+}
+
+function addQuizCard(q, index) {
+    const list = document.getElementById('quiz-questions-list');
+    const card = document.createElement('div');
+    card.className = 'gallery-card';
+    card.dataset.index = index;
+    card.style.display = 'flex';
+    card.style.flexDirection = 'column';
+    card.style.alignItems = 'stretch';
+    card.style.gap = '0';
+
+    const optionsHTML = (q.options || ['','','','']).map((opt, oi) => `
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom: 10px;">
+            <input type="radio" name="correct-${index}" value="${oi}" id="opt-${index}-${oi}" ${q.correct === oi ? 'checked' : ''} style="width: 20px; height: 20px; flex-shrink: 0; cursor: pointer;">
+            <input type="text" class="qz-opt" data-opt="${oi}" placeholder="Opção ${oi+1}" value="${escHtml(opt)}" style="flex:1; margin-bottom: 0;">
+        </div>
+    `).join('');
+
+    card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; width: 100%;">
+            <h4 class="qz-title" style="margin: 0; font-size: 1rem; color: var(--text);">Pergunta ${index+1}</h4>
+            <button class="btn btn-danger btn-sm btn-icon qz-remove" title="Remover esta pergunta" style="align-self: center;">🗑 Remover</button>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label style="font-size: 0.85rem;">Texto da Pergunta</label>
+            <input type="text" class="qz-question" placeholder="Escreva a pergunta aqui..." value="${escHtml(q.question || '')}">
+        </div>
+
+        <label style="font-weight:600; margin-bottom: 10px; display: block; color: var(--text-muted); font-size: 0.85rem;">
+            Respostas <span style="font-weight:400;">(selecione 🔘 a opção correta)</span>
+        </label>
+        <div class="quiz-options-container" style="display: flex; flex-direction: column; width: 100%;">
+            ${optionsHTML}
+        </div>
+    `;
+
+    card.querySelector('.qz-remove').addEventListener('click', () => {
+        card.remove();
+        // Re-index remaining cards
+        document.querySelectorAll('#quiz-questions-list .gallery-card').forEach((c, i) => {
+            c.dataset.index = i;
+            c.querySelector('.qz-title').textContent = `Pergunta ${i+1}`;
+            // Update radio names to avoid conflicts after deletion
+            c.querySelectorAll('input[type="radio"]').forEach(r => {
+                r.name = `correct-${i}`;
+            });
+        });
+    });
+
+    list.appendChild(card);
+}
+
+document.getElementById('add-question-btn').addEventListener('click', () => {
+    const idx = document.querySelectorAll('#quiz-questions-list .gallery-card').length;
+    addQuizCard({ question: '', options: ['', '', '', ''], correct: 0 }, idx);
+});
+
+function readQuiz() {
+    const cards = document.querySelectorAll('#quiz-questions-list .gallery-card');
+    config.quiz = Array.from(cards).map(card => {
+        const question = card.querySelector('.qz-question').value.trim();
+        const optInputs = card.querySelectorAll('.qz-opt');
+        const options = Array.from(optInputs).map(i => i.value.trim());
+        const radios = card.querySelectorAll('input[type="radio"]');
+        let correct = 0;
+        radios.forEach((r, i) => { if (r.checked) correct = i; });
+        return { question, options, correct };
+    });
+}
+
+// =============================================
+// UTILITY
+// =============================================
+function escHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// =============================================
+// BOOT
+// =============================================
+initPin();
+initTabs();
+config = loadConfig();
+populateAll();
+initSettings();
+</script>
+</body>
+</html>

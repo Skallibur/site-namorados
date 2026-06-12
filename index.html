@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-PT" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedro & Lynda</title>
+    <meta name="description" content="Um site de amor dedicado a Pedro e Lynda. Uma história de amor especial.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        netflix: '#E50914',
+                        darkBg: '#141414',
+                        cardDark: '#1f1f1f',
+                        romantic: '#ff2a7a',
+                    },
+                    fontFamily: {
+                        cursive: ['"Great Vibes"', 'cursive'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'hero-gradient': 'linear-gradient(to top, #141414 0%, rgba(20,20,20,0.8) 50%, rgba(20,20,20,0.3) 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #141414;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        #heart-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .z-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-bg {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .polaroid {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.05) !important;
+            z-index: 30;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .timeline-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .timeline-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 350px;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #a30f37;
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s ease;
+        }
+
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #8a0b2d;
+            border-radius: 10px;
+            z-index: 0;
+        }
+
+        .letter {
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
+            right: 20px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            color: #333;
+            font-family: 'Inter', sans-serif;
+            text-align: left;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+            height: 90%;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            background: #b3123d;
+            clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
+            pointer-events: none;
+        }
+
+        .envelope-front::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: #960c2b; /* slightly darker shade for the bottom fold */
+            clip-path: polygon(0 100%, 50% 60%, 100% 100%);
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: #d41749;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out, z-index 0.1s;
+            z-index: 4;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .envelope-wrapper.is-open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .envelope-wrapper.is-open .letter {
+            transform: translateY(-80%);
+            z-index: 2;
+        }
+
+        .envelope-wrapper:hover:not(.is-open) {
+            transform: translateY(-5px);
+        }
+
+        .letter::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .letter::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .letter::-webkit-scrollbar-thumb {
+            background: #ff2a7a;
+            border-radius: 4px;
+        }
+
+        /* Admin link badge */
+        .admin-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(229, 9, 20, 0.15);
+            border: 1px solid rgba(229, 9, 20, 0.4);
+            color: #E50914;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            letter-spacing: 0.05em;
+        }
+
+        .admin-badge:hover {
+            background: rgba(229, 9, 20, 0.3);
+            border-color: #E50914;
+            color: white;
+        }
+
+        .timeline-dot-netflix {
+            border-color: #E50914;
+        }
+
+        .timeline-dot-romantic {
+            border-color: #ff2a7a;
+        }
+
+        .timeline-dot-white {
+            border-color: #d1d5db;
+        }
+
+        /* Intro Overlay */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: #0e0e0e;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+            cursor: pointer;
+        }
+
+        #intro-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .intro-envelope {
+            width: 90px;
+            height: 90px;
+            background: var(--netflix, #E50914);
+            border-radius: 12px;
+            position: relative;
+            animation: float 3s ease-in-out infinite, pulse-glow 2s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(229, 9, 20, 0.4);
+        }
+
+        .intro-envelope::before {
+            content: "💌";
+            font-size: 3rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 20px rgba(229, 9, 20, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(229, 9, 20, 0);
+            }
+        }
+
+        .intro-text {
+            margin-top: 40px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 0.5px;
+            animation: fadeInOut 2.5s infinite;
+            font-weight: 500;
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased font-sans overflow-hidden" id="main-body">
+
+    <!-- INTRO OVERLAY -->
+    <div id="intro-overlay">
+        <div class="intro-envelope"></div>
+        <div class="intro-text">
+            Você recebeu uma nova mensagem...
+            <span class="text-sm text-gray-500 mt-3 block font-normal uppercase tracking-widest">Toque para abrir</span>
+        </div>
+    </div>
+
+    <canvas id="heart-canvas"></canvas>
+
+    <!-- Admin quick link -->
+    <a href="admin.html" class="admin-badge" title="Painel de Administração">⚙ Admin</a>
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 w-full z-50 transition-all duration-300 z-content" id="navbar">
+        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <h1 id="nav-title" class="font-cursive text-netflix font-bold text-4xl tracking-tighter">Pedro & Lynda</h1>
+            
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-300">
+                <a href="#hero" class="hover:text-white transition">Início</a>
+                <a href="#counter" class="hover:text-white transition">O Nosso Tempo</a>
+                <a href="#starmap" class="hover:text-white transition">Céu</a>
+                <a href="#gallery" class="hover:text-white transition">Momentos</a>
+                <a href="#timeline" class="hover:text-white transition">História</a>
+                <a href="#fightcard" class="hover:text-white transition">Main Event</a>
+                <a href="#fight-video" class="hover:text-white transition">Combate</a>
+                <a href="#quiz" class="hover:text-white transition">Quiz</a>
+                <a href="#letter" class="hover:text-white transition">Mensagem</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <div id="nav-initials" class="w-8 h-8 rounded bg-netflix flex items-center justify-center font-bold shadow-lg text-sm">PL</div>
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-btn" class="md:hidden flex flex-col gap-[5px] p-1" aria-label="Menu">
+                    <span class="w-6 h-0.5 bg-white transition-all duration-300 block" id="mb-bar1"></span>
+                    <span class="w-6 h-0.5 bg-white transition-all duration-300 block" id="mb-bar2"></span>
+                    <span class="w-6 h-0.5 bg-white transition-all duration-300 block" id="mb-bar3"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="md:hidden hidden bg-[#141414]/95 backdrop-blur-md border-t border-gray-800 px-6 py-4">
+            <nav class="flex flex-col gap-4 text-sm font-medium text-gray-300">
+                <a href="#hero"        class="hover:text-white transition mobile-nav-link">🏠 Início</a>
+                <a href="#counter"     class="hover:text-white transition mobile-nav-link">⏱ O Nosso Tempo</a>
+                <a href="#starmap"     class="hover:text-white transition mobile-nav-link">⭐ Sob Este Céu</a>
+                <a href="#gallery"     class="hover:text-white transition mobile-nav-link">📸 Momentos</a>
+                <a href="#timeline"    class="hover:text-white transition mobile-nav-link">📅 A Nossa História</a>
+                <a href="#fightcard"   class="hover:text-white transition mobile-nav-link">🥊 Main Event</a>
+                <a href="#fight-video" class="hover:text-white transition mobile-nav-link">🎬 O Nosso Combate</a>
+                <a href="#quiz"        class="hover:text-white transition mobile-nav-link">🧠 Quiz do Casal</a>
+                <a href="#letter"      class="hover:text-white transition mobile-nav-link">💌 Mensagem</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- SEÇÃO 1: HERO -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-start hero-bg z-content">
+        <div class="absolute inset-0 bg-hero-gradient"></div>
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="container mx-auto px-6 relative z-10 pt-20">
+            <div class="max-w-2xl">
+                <div class="flex items-center space-x-2 mb-4">
+                    <span
+                        class="bg-netflix text-white text-[10px] font-bold px-2 py-1 rounded shadow-md tracking-wider">❤
+                        EXCLUSIVO</span>
+                </div>
+                <h2 id="hero-title"
+                    class="font-cursive text-6xl md:text-8xl lg:text-9xl mb-4 text-white drop-shadow-2xl">Pedro e Lynda
+                </h2>
+                <div
+                    class="flex items-center space-x-4 text-sm md:text-base text-gray-300 mb-6 font-semibold drop-shadow-md">
+                    <span id="hero-date">24/04/2026</span>
+                    <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                    <span id="hero-seasons">3 TEMPORADAS</span>
+                    <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                    <span id="hero-stars" class="text-netflix text-lg tracking-widest">★★★★★</span>
+                </div>
+                <p id="hero-quote"
+                    class="text-lg text-gray-200 mb-8 leading-relaxed drop-shadow text-justify md:text-left">
+                    "A cada batida do meu coração, sinto que você é a razão de cada sorriso..."
+                </p>
+                <div class="flex flex-wrap items-center gap-4">
+                    <a href="#counter"
+                        class="bg-white text-black font-bold px-8 py-3 rounded hover:bg-gray-200 transition-colors flex items-center gap-2">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                        Continuar
+                    </a>
+                    <button
+                        class="bg-gray-800/60 border border-gray-600 text-white font-bold px-8 py-3 rounded hover:bg-gray-700 hover:border-gray-500 transition-all backdrop-blur-sm flex items-center gap-2 group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-netflix transition-colors"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        Favorito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 2: CONTADOR -->
+    <section id="counter" class="py-24 bg-darkBg z-content border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h3 class="font-cursive text-5xl md:text-6xl text-white mb-2">Juntos há...</h3>
+                <p
+                    class="text-xs md:text-sm text-gray-500 uppercase tracking-widest font-semibold flex items-center justify-center gap-1">
+                    E cada segundo conta <span class="text-netflix">❤</span>
+                </p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-4 md:gap-6 max-w-6xl mx-auto">
+                <div id="years-card"
+                    class="bg-cardDark/40 border border-gray-800/80 rounded-2xl w-24 h-28 md:w-32 md:h-36 flex flex-col justify-center items-center shadow-2xl relative group hover:border-netflix/50 hover:scale-105 transition-all duration-300">
+                    <div id="val-years" class="text-3xl md:text-5xl font-bold text-netflix mb-1">00</div>
+                    <div id="label-years"
+                        class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">Anos</div>
+                </div>
+                <div id="years-dot" class="flex items-center text-gray-800 text-2xl font-bold select-none">•</div>
+                <div
+                    class="bg-cardDark/40 border border-gray-800/80 rounded-2xl w-24 h-28 md:w-32 md:h-36 flex flex-col justify-center items-center shadow-2xl relative group hover:border-netflix/50 hover:scale-105 transition-all duration-300">
+                    <div id="val-months" class="text-3xl md:text-5xl font-bold text-netflix mb-1">00</div>
+                    <div id="label-months"
+                        class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">Meses</div>
+                </div>
+                <div class="flex items-center text-gray-800 text-2xl font-bold select-none">•</div>
+                <div
+                    class="bg-cardDark/40 border border-gray-800/80 rounded-2xl w-24 h-28 md:w-32 md:h-36 flex flex-col justify-center items-center shadow-2xl relative group hover:border-netflix/50 hover:scale-105 transition-all duration-300">
+                    <div id="val-days" class="text-3xl md:text-5xl font-bold text-netflix mb-1">00</div>
+                    <div class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">Dias</div>
+                </div>
+                <div class="flex items-center text-gray-800 text-2xl font-bold select-none">•</div>
+                <div
+                    class="bg-cardDark/40 border border-gray-800/80 rounded-2xl w-24 h-28 md:w-32 md:h-36 flex flex-col justify-center items-center shadow-2xl relative group hover:border-netflix/50 hover:scale-105 transition-all duration-300">
+                    <div id="val-hours" class="text-3xl md:text-5xl font-bold text-netflix mb-1">00</div>
+                    <div class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">Horas</div>
+                </div>
+                <div class="flex items-center text-gray-800 text-2xl font-bold select-none">•</div>
+                <div
+                    class="bg-cardDark/40 border border-gray-800/80 rounded-2xl w-24 h-28 md:w-32 md:h-36 flex flex-col justify-center items-center shadow-2xl relative group hover:border-netflix/50 hover:scale-105 transition-all duration-300">
+                    <div id="val-minutes" class="text-3xl md:text-5xl font-bold text-netflix mb-1">00</div>
+                    <div class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">Min</div>
+                </div>
+                <div class="flex items-center text-gray-800 text-2xl font-bold select-none">•</div>
+                <div
+                    class="bg-cardDark/40 border border-gray-800/80 rounded-2xl w-24 h-28 md:w-32 md:h-36 flex flex-col justify-center items-center shadow-2xl relative group hover:border-netflix/50 hover:scale-105 transition-all duration-300">
+                    <div id="val-seconds" class="text-3xl md:text-5xl font-bold text-netflix mb-1">00</div>
+                    <div class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider">Seg</div>
+                </div>
+            </div>
+            <div class="text-center mt-12 text-sm text-gray-500">
+                Desde o primeiro play: <span id="counter-since-label" class="text-gray-300">24 de Abril de 2026</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO BÔNUS: MAPA DAS ESTRELAS -->
+    <section id="starmap" class="py-24 bg-black z-content relative border-t border-gray-900 overflow-hidden">
+        <div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_1px,transparent_1px)]" style="background-size: 40px 40px;"></div>
+        
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h3 class="text-3xl md:text-5xl font-bold mb-4 font-cursive text-white tracking-wider drop-shadow-lg">Sob este céu...</h3>
+            <p class="text-gray-400 mb-12 uppercase tracking-[0.2em] text-xs md:text-sm font-bold">O universo quando a nossa história começou</p>
+            
+            <div class="max-w-xl mx-auto">
+                <div class="relative p-2 rounded-full border border-gray-800 shadow-[0_0_60px_rgba(255,255,255,0.05)] bg-[#050505] group">
+                    <img id="sm-img" src="mapa-estrelas.png" alt="Mapa das estrelas" class="w-full h-auto rounded-full mix-blend-screen opacity-90 group-hover:opacity-100 transition-opacity duration-700">
+                    <div class="absolute inset-0 rounded-full shadow-[inset_0_0_40px_rgba(0,0,0,0.8)] pointer-events-none"></div>
+                </div>
+            </div>
+            
+            <div class="mt-8">
+                <p id="sm-date" class="text-white text-sm md:text-base tracking-[0.3em] uppercase font-bold mb-2">24 de Abril de 2026</p>
+                <p class="text-gray-500 text-xs md:text-sm tracking-widest uppercase flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4 text-netflix" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                    <span id="sm-location-text">Coordenadas do Amor</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 3: GALERIA POLAROIDE -->
+    <section id="gallery" class="py-24 bg-gradient-to-b from-darkBg to-[#0a0a0a] z-content relative">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h3 class="text-3xl md:text-4xl font-bold mb-4">Cenas do Nosso Amor</h3>
+                <p class="text-gray-400">Fotos dos nossos melhores momentos.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto" id="gallery-grid">
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 4: LINHA DO TEMPO -->
+    <section id="timeline" class="py-24 bg-[#0a0a0a] z-content">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h3 class="text-3xl md:text-4xl font-bold mb-4">Temporadas Passadas</h3>
+                <p class="text-gray-400">O enredo da nossa história de amor.</p>
+            </div>
+            <div class="relative max-w-4xl mx-auto" id="timeline-container">
+                <div
+                    class="absolute left-[15px] md:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-netflix via-romantic to-darkBg transform md:-translate-x-1/2">
+                </div>
+                <!-- Timeline items injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO BÔNUS: FIGHT CARD -->
+    <section id="fightcard" class="py-24 bg-darkBg z-content border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h3 class="text-3xl md:text-4xl font-bold mb-4 text-netflix uppercase tracking-widest font-sans italic">
+                    Main Event</h3>
+                <p class="text-gray-400">Os campeões mundiais do nosso tatame.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-cardDark border border-gray-800 rounded-xl overflow-hidden shadow-2xl">
+                <!-- Header Fight Card -->
+                <div
+                    class="bg-gradient-to-r from-red-900 via-black to-red-900 py-4 text-center border-b border-netflix/30">
+                    <h4 class="text-2xl font-bold text-white uppercase tracking-[0.2em]">Disputa de Cinturão</h4>
+                    <p class="text-sm text-gray-400">Categoria: Peso Pesado do Amor</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center justify-between p-8 gap-8">
+                    <!-- Lutador 1 -->
+                    <div class="flex-1 text-center w-full">
+                        <div
+                            class="w-32 h-32 mx-auto rounded-full border-4 border-netflix overflow-hidden mb-4 shadow-[0_0_15px_rgba(229,9,20,0.5)]">
+                            <img id="fc-img1"
+                                src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=200&auto=format&fit=crop"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <h5 id="fc-name1" class="text-2xl font-bold uppercase">Pedro</h5>
+                        <p id="fc-nick1" class="text-netflix text-sm font-bold tracking-widest mb-4">"The Champion"</p>
+                        <div class="grid grid-cols-2 gap-2 text-sm text-gray-300 text-left bg-black/30 p-3 rounded-lg">
+                            <span class="font-bold">Graduação:</span> <span id="fc-belt1"
+                                class="text-right text-white">Faixa Preta</span>
+                            <span class="font-bold">Finalização:</span> <span id="fc-sub1"
+                                class="text-right text-white">Abraço de Urso</span>
+                        </div>
+                    </div>
+
+                    <!-- VS -->
+                    <div class="flex-shrink-0 text-5xl font-bold text-gray-700 italic">
+                        VS
+                    </div>
+
+                    <!-- Lutador 2 -->
+                    <div class="flex-1 text-center w-full">
+                        <div
+                            class="w-32 h-32 mx-auto rounded-full border-4 border-romantic overflow-hidden mb-4 shadow-[0_0_15px_rgba(255,42,122,0.5)]">
+                            <img id="fc-img2"
+                                src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=200&auto=format&fit=crop"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <h5 id="fc-name2" class="text-2xl font-bold uppercase">Lynda</h5>
+                        <p id="fc-nick2" class="text-romantic text-sm font-bold tracking-widest mb-4">"The Queen"</p>
+                        <div class="grid grid-cols-2 gap-2 text-sm text-gray-300 text-left bg-black/30 p-3 rounded-lg">
+                            <span class="font-bold">Graduação:</span> <span id="fc-belt2"
+                                class="text-right text-white">Faixa Preta</span>
+                            <span class="font-bold">Finalização:</span> <span id="fc-sub2"
+                                class="text-right text-white">Sorriso Fatal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO BÔNUS: VÍDEO DO COMBATE -->
+    <section id="fight-video" class="py-16 bg-[#050505] z-content border-t border-gray-900">
+        <div class="container mx-auto px-6 text-center">
+            <div class="max-w-4xl mx-auto bg-black rounded-xl overflow-hidden shadow-[0_0_30px_rgba(229,9,20,0.2)] border border-gray-800 relative group aspect-video flex items-center justify-center">
+                
+                <!-- Video Element -->
+                <video id="ufc-video-player" class="w-full h-full object-cover hidden" preload="metadata" controlsList="nodownload">
+                    <!-- Vídeo de exemplo - deve ser substituído pelo utilizador -->
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" id="ufc-video-src">
+                    O seu browser não suporta vídeos.
+                </video>
+                
+                <!-- Overlay (UFC PPV style) -->
+                <div id="ufc-video-overlay" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center transition-opacity duration-500 z-10 cursor-pointer bg-[url('https://images.unsplash.com/photo-1599058917212-97d14ad43b4e?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center bg-blend-overlay">
+                    <div class="text-netflix text-xs md:text-sm font-bold tracking-[0.3em] uppercase mb-4 border border-netflix px-3 py-1 rounded bg-black/50 backdrop-blur-sm">Ao Vivo - Pay-Per-View</div>
+                    <h3 class="text-3xl md:text-5xl font-bold text-white mb-8 uppercase italic tracking-wider shadow-black drop-shadow-[0_5px_5px_rgba(0,0,0,1)]">O Nosso Combate</h3>
+                    <button id="ufc-play-btn" class="w-24 h-24 bg-netflix rounded-full flex items-center justify-center hover:scale-110 hover:bg-red-700 transition-all shadow-[0_0_30px_rgba(229,9,20,0.8)]">
+                        <svg class="w-12 h-12 text-white ml-2 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                    <p class="text-gray-400 text-sm mt-6 font-bold tracking-widest uppercase animate-pulse">Toque para Assistir</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO BÔNUS: QUIZ -->
+    <section id="quiz" class="py-24 bg-[#0a0a0a] z-content border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center">
+            <div class="text-center mb-16">
+                <h3 class="text-3xl md:text-4xl font-bold mb-4">Quiz do Casal</h3>
+                <p class="text-gray-400">Vamos ver quem conhece melhor a nossa história.</p>
+            </div>
+
+            <div id="quiz-container"
+                class="max-w-2xl mx-auto bg-cardDark border border-gray-800 rounded-xl p-8 shadow-xl">
+                <div id="quiz-question-container">
+                    <h4 id="quiz-question" class="text-xl md:text-2xl font-bold mb-8 text-white">Carregando pergunta...
+                    </h4>
+                    <div id="quiz-options" class="flex flex-col gap-4">
+                        <!-- Botões de opção gerados via JS -->
+                    </div>
+                </div>
+
+                <div id="quiz-result" class="hidden">
+                    <div id="quiz-result-icon" class="text-6xl mb-4">🏆</div>
+                    <h4 id="quiz-result-title" class="text-2xl font-bold mb-2">Pontuação Final</h4>
+                    <p id="quiz-result-score" class="text-gray-300 mb-6 text-lg">Acertaste X de Y perguntas!</p>
+                    <button onclick="restartQuiz()"
+                        class="bg-netflix text-white font-bold px-6 py-2 rounded hover:bg-red-700 transition">Tentar
+                        Novamente</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 5: CARTA DE AMOR -->
+    <section id="letter" class="py-32 bg-darkBg z-content relative overflow-hidden">
+        <div
+            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-romantic opacity-5 rounded-full blur-[100px] pointer-events-none">
+        </div>
+        <div class="container mx-auto px-6 text-center">
+            <h3 class="text-3xl md:text-4xl font-bold mb-4">Um Spoiler do Meu Coração</h3>
+            <p class="text-gray-400 mb-16">Clique no envelope para ler a mensagem exclusiva.</p>
+            <div class="envelope-wrapper mx-auto" id="envelope">
+                <div class="envelope-back"></div>
+                <div class="letter text-sm md:text-base leading-relaxed text-gray-800" id="letter-content">
+                    <!-- Injected by JS -->
+                </div>
+                <div class="envelope-front"></div>
+                <div class="flap"></div>
+            </div>
+            <p class="mt-8 text-xs text-gray-500 uppercase tracking-widest" id="envelope-tip">Toque para abrir</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#050505] py-8 text-center border-t border-gray-900 z-content relative">
+        <p class="text-gray-500 text-sm">
+            Feito com <span class="text-netflix">❤</span> por <span id="footer-name">Pedro</span> para <span
+                id="footer-partner">Lynda</span>. <br>
+            <span class="text-xs opacity-50 mt-2 block" id="footer-copy">© 2026 Pedro & Lynda. Todos os direitos
+                reservados.</span>
+        </p>
+    </footer>
+
+    <script>
+        // =============================================
+        // DEFAULT CONFIGURATION
+        // =============================================
+        const DEFAULT_CONFIG = {
+            general: {
+                name1: "Pedro",
+                name2: "Lynda",
+                startDate: "2026-04-24",
+                heroTitle: "Pedro e Lynda",
+                heroDateLabel: "24/04/2026",
+                heroSeasons: "3 TEMPORADAS",
+                heroQuote: "\"A cada batida do meu coração, sinto que você é a razão de cada sorriso e de cada sonho realizado. O seu amor é o abrigo onde encontro paz e alegria. E nos seus braços, o mundo torna-se um lugar mágico e seguro. Nunca imaginei que poderia amar assim, com tanta intensidade e entrega. Você é o meu sol, o meu destino e o meu tudo.\"",
+                heroBg: "https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?q=80&w=2000&auto=format&fit=crop",
+                fightVideoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                starmapImg: "mapa-estrelas.png",
+                starmapDate: "24 de Abril de 2026",
+                starmapLocation: "Coordenadas do Amor"
+            },
+            gallery: [
+                { img: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=600&auto=format&fit=crop", caption: "O nosso sorriso favorito" },
+                { img: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=600&auto=format&fit=crop", caption: "Aventuras inesquecíveis" },
+                { img: "https://images.unsplash.com/photo-1507504031003-b417219a0fde?q=80&w=600&auto=format&fit=crop", caption: "Paz no seu abraço" },
+                { img: "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?q=80&w=600&auto=format&fit=crop", caption: "Beijos e mais beijos" },
+                { img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=600&auto=format&fit=crop", caption: "Dias de Sol consigo" },
+                { img: "https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=600&auto=format&fit=crop", caption: "O nosso lugar secreto" }
+            ],
+            timeline: [
+                { title: "O Primeiro Contacto", dateLabel: "Abril de 2026", description: "O momento em que os nossos olhares se cruzaram. A partir dali, soube que a minha vida iria mudar para sempre.", accent: "netflix", side: "left" },
+                { title: "O Primeiro Beijo", dateLabel: "A Nossa Data", description: "O mundo parou. Foi como a cena final do filme mais perfeito, mas para nós era apenas o começo.", accent: "romantic", side: "right" },
+                { title: "O Pedido Oficial", dateLabel: "24/04/2026", description: "O sim mais feliz da minha vida. Oficializámos o nosso amor e decidimos maratonar a vida juntos.", accent: "white", side: "left" }
+            ],
+            letter: {
+                salutation: "Minha amada Lynda,",
+                paragraphs: [
+                    "Escrevo estas linhas não como um guião decorado, mas com a sinceridade de quem encontrou a protagonista perfeita para a história da sua vida.",
+                    "Desde aquele 24 de Abril de 2026, cada dia ao seu lado tem sido uma jornada incrível. Trouxe cor, banda sonora e muita paixão para a minha rotina. As partes difíceis da vida parecem apenas plot twists que superamos juntos, e os momentos felizes são a nossa melhor temporada.",
+                    "Neste Dia dos Namorados, quero renovar a minha subscrição com o seu coração. Prometo amá-la nos episódios agitados e nas pausas silenciosas. É extraordinária, linda e a mulher dos meus sonhos."
+                ],
+                signoff: "Com todo o meu amor,",
+                signature: "Pedro"
+            },
+            quiz: [
+                {
+                    question: "Onde foi o nosso primeiro rola (treino)?",
+                    options: ["Na academia antiga", "No campeonato", "Numa aula especial", "Na praia"],
+                    correct: 0
+                },
+                {
+                    question: "Quem finalizou quem primeiro?",
+                    options: ["Pedro", "Lynda", "Deu empate", "O mestre parou"],
+                    correct: 1
+                },
+                {
+                    question: "Qual é a nossa finalização de assinatura (como casal)?",
+                    options: ["Mata-leão", "Triângulo", "Chave de braço", "Abraço de Urso"],
+                    correct: 3
+                }
+            ]
+        };
+
+        // =============================================
+        // LOAD CONFIG
+        // =============================================
+        function loadConfig() {
+            try {
+                const stored = localStorage.getItem('pl_config');
+                if (stored) return JSON.parse(stored);
+            } catch (e) { console.warn('Config load error:', e); }
+            return DEFAULT_CONFIG;
+        }
+
+        // =============================================
+        // APPLY CONFIG TO DOM
+        // =============================================
+        function applyConfig(cfg) {
+            const g = cfg.general;
+
+            // Title & nav
+            const title = `${g.name1} & ${g.name2}`;
+            document.title = title;
+            document.getElementById('nav-title').textContent = title;
+            document.getElementById('nav-initials').textContent = (g.name1[0] || 'P') + (g.name2[0] || 'L');
+
+            // Hero
+            document.querySelector('.hero-bg').style.backgroundImage = `url('${g.heroBg}')`;
+            document.getElementById('hero-title').textContent = g.heroTitle;
+            document.getElementById('hero-date').textContent = g.heroDateLabel;
+            document.getElementById('hero-seasons').textContent = g.heroSeasons;
+            document.getElementById('hero-quote').textContent = g.heroQuote;
+
+            // Fight Video
+            const videoSrc = document.getElementById('ufc-video-src');
+            const videoPlayer = document.getElementById('ufc-video-player');
+            if (videoSrc && videoPlayer) {
+                videoSrc.src = g.fightVideoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+                videoPlayer.load();
+            }
+
+            // Starmap
+            const smImg = document.getElementById('sm-img');
+            if (smImg) smImg.src = g.starmapImg || 'mapa-estrelas.png';
+            const smDate = document.getElementById('sm-date');
+            if (smDate) smDate.textContent = g.starmapDate || '24 de Abril de 2026';
+            const smLocation = document.getElementById('sm-location-text');
+            if (smLocation) smLocation.textContent = g.starmapLocation || 'Coordenadas do Amor';
+
+            // Counter date label
+            const dateObj = new Date(g.startDate + 'T00:00:00');
+            const dateFormatted = dateObj.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('counter-since-label').textContent = dateFormatted;
+
+            // Footer
+            document.getElementById('footer-name').textContent = g.name1;
+            document.getElementById('footer-partner').textContent = g.name2;
+            document.getElementById('footer-copy').textContent = `© ${new Date().getFullYear()} ${title}. Todos os direitos reservados.`;
+
+            // Gallery
+            buildGallery(cfg.gallery || []);
+
+            // Timeline
+            buildTimeline(cfg.timeline || []);
+
+            // Letter
+            buildLetter(cfg.letter);
+
+            // Quiz
+            quizQuestions = (cfg.quiz && cfg.quiz.length > 0) ? cfg.quiz : DEFAULT_CONFIG.quiz;
+            renderQuiz();
+
+            // Start counter with config date
+            startCounter(g.startDate);
+        }
+
+        // =============================================
+        // GALLERY
+        // =============================================
+        function buildGallery(items) {
+            const container = document.getElementById('gallery-grid');
+            container.innerHTML = '';
+            items.forEach(item => {
+                const rot = (Math.random() * 8 - 4).toFixed(2);
+                const div = document.createElement('div');
+                div.className = 'polaroid bg-white p-4 pb-12 rounded-sm relative flex flex-col items-center mx-auto w-full max-w-sm';
+                div.style.transform = `rotate(${rot}deg)`;
+                div.innerHTML = `
+                <div class="w-full aspect-square overflow-hidden bg-gray-200">
+                    <img src="${item.img}" alt="${item.caption}" loading="lazy"
+                        class="w-full h-full object-cover filter contrast-110 saturate-110 hover:scale-110 transition-transform duration-700">
+                </div>
+                <div class="absolute bottom-4 left-0 w-full text-center">
+                    <span class="font-cursive text-2xl text-gray-800">${item.caption}</span>
+                </div>
+                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 w-16 h-6 bg-white/40 backdrop-blur-sm border border-white/20 shadow-sm rotate-2"></div>
+            `;
+                container.appendChild(div);
+            });
+        }
+
+        // =============================================
+        // TIMELINE
+        // =============================================
+        const accentMap = { netflix: '#E50914', romantic: '#ff2a7a', white: '#d1d5db' };
+        function buildTimeline(items) {
+            const container = document.getElementById('timeline-container');
+            // Keep the gradient line (first child)
+            const line = container.querySelector('div');
+            container.innerHTML = '';
+            // Re-add the line
+            const gradLine = document.createElement('div');
+            gradLine.className = 'absolute left-[15px] md:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-netflix via-romantic to-darkBg transform md:-translate-x-1/2';
+            container.appendChild(gradLine);
+
+            items.forEach((item, i) => {
+                const color = accentMap[item.accent] || '#E50914';
+                const isLeft = item.side === 'left';
+                const div = document.createElement('div');
+                div.className = 'timeline-item flex flex-col md:flex-row items-center mb-16 relative';
+
+                if (isLeft) {
+                    div.innerHTML = `
+                    <div class="md:w-1/2 md:pr-12 w-full pl-12 md:pl-0 text-left md:text-right">
+                        <h4 class="text-xl font-bold" style="color:${color}">${item.title}</h4>
+                        <span class="text-sm text-gray-400">${item.dateLabel}</span>
+                        <p class="mt-2 text-gray-300 bg-cardDark p-4 rounded-lg border border-gray-800 shadow-md">${item.description}</p>
+                    </div>
+                    <div class="absolute left-[11px] md:left-1/2 w-3 h-3 bg-white rounded-full border-4 transform md:-translate-x-1/2 z-10" style="border-color:${color}"></div>
+                    <div class="md:w-1/2 w-full"></div>
+                `;
+                } else {
+                    div.innerHTML = `
+                    <div class="md:w-1/2 w-full hidden md:block"></div>
+                    <div class="absolute left-[11px] md:left-1/2 w-3 h-3 bg-white rounded-full border-4 transform md:-translate-x-1/2 z-10" style="border-color:${color}"></div>
+                    <div class="md:w-1/2 md:pl-12 w-full pl-12 text-left">
+                        <h4 class="text-xl font-bold" style="color:${color}">${item.title}</h4>
+                        <span class="text-sm text-gray-400">${item.dateLabel}</span>
+                        <p class="mt-2 text-gray-300 bg-cardDark p-4 rounded-lg border border-gray-800 shadow-md">${item.description}</p>
+                    </div>
+                `;
+                }
+                container.appendChild(div);
+            });
+
+            // Re-attach intersection observer
+            document.querySelectorAll('.timeline-item').forEach(el => timelineObserver.observe(el));
+        }
+
+        // =============================================
+        // LETTER
+        // =============================================
+        function buildLetter(letter) {
+            const content = document.getElementById('letter-content');
+            const paragraphs = (letter.paragraphs || []).map(p => `<p class="mb-3">${p}</p>`).join('');
+            content.innerHTML = `
+            <h4 class="font-cursive text-3xl mb-4 text-netflix text-center">${letter.salutation}</h4>
+            ${paragraphs}
+            <p class="text-right mt-6 font-bold text-romantic">
+                ${letter.signoff}<br>
+                <span class="font-cursive text-2xl text-black">${letter.signature}</span>
+            </p>
+        `;
+        }
+
+        // =============================================
+        // COUNTER
+        // =============================================
+        let counterInterval = null;
+        function startCounter(startDateStr) {
+            if (counterInterval) clearInterval(counterInterval);
+            const startDate = new Date(startDateStr + 'T00:00:00');
+            const elYears = document.getElementById('val-years');
+            const elMonths = document.getElementById('val-months');
+            const elDays = document.getElementById('val-days');
+            const elHours = document.getElementById('val-hours');
+            const elMinutes = document.getElementById('val-minutes');
+            const elSeconds = document.getElementById('val-seconds');
+
+            const cardYears = document.getElementById('years-card');
+            const dotYears = document.getElementById('years-dot');
+            const labelMonths = document.getElementById('label-months');
+
+            function update() {
+                const now = new Date();
+                let isFuture = false;
+                let diff = now - startDate;
+                
+                if (isNaN(diff)) {
+                    elYears.innerText = "00";
+                    elMonths.innerText = "00";
+                    cardYears.style.display = 'none';
+                    dotYears.style.display = 'none';
+                    return;
+                }
+
+                let calcStart = startDate;
+                let calcEnd = now;
+
+                if (diff < 0) {
+                    isFuture = true;
+                    calcStart = now;
+                    calcEnd = startDate;
+                }
+
+                // Calculation of Years and Months accurately by comparing dates
+                let years = calcEnd.getFullYear() - calcStart.getFullYear();
+                let months = calcEnd.getMonth() - calcStart.getMonth();
+                let days = calcEnd.getDate() - calcStart.getDate();
+
+                if (days < 0) {
+                    // Borrow days from the previous month
+                    const prevMonth = new Date(calcEnd.getFullYear(), calcEnd.getMonth(), 0);
+                    days += prevMonth.getDate();
+                    months--;
+                }
+
+                if (months < 0) {
+                    months += 12;
+                    years--;
+                }
+
+                // Time elements
+                let hours = calcEnd.getHours() - calcStart.getHours();
+                let minutes = calcEnd.getMinutes() - calcStart.getMinutes();
+                let seconds = calcEnd.getSeconds() - calcStart.getSeconds();
+
+                if (seconds < 0) { seconds += 60; minutes--; }
+                if (minutes < 0) { minutes += 60; hours--; }
+                if (hours < 0) { hours += 24; days--; }
+
+                // Set content
+                elYears.innerText = String(years).padStart(2, '0');
+                elMonths.innerText = String(months).padStart(2, '0');
+                elDays.innerText = String(days).padStart(2, '0');
+                elHours.innerText = String(hours).padStart(2, '0');
+                elMinutes.innerText = String(minutes).padStart(2, '0');
+                elSeconds.innerText = String(seconds).padStart(2, '0');
+
+                // Hide years if 0
+                if (years <= 0) {
+                    cardYears.style.display = 'none';
+                    dotYears.style.display = 'none';
+                } else {
+                    cardYears.style.display = 'flex';
+                    dotYears.style.display = 'flex';
+                }
+
+                // Pluralization of months label
+                if (months === 1) {
+                    labelMonths.innerText = "mês";
+                } else {
+                    labelMonths.innerText = "meses";
+                }
+            }
+            update();
+            counterInterval = setInterval(update, 1000);
+        }
+
+        // =============================================
+        // HEART PARTICLES
+        // =============================================
+        const canvas = document.getElementById('heart-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+        class Heart {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 2 + 1;
+                this.speedY = Math.random() * 1 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.3 + 0.1;
+                this.color = ['#E50914', '#ff2a7a', '#ffffff'][Math.floor(Math.random() * 3)];
+            }
+            update() {
+                this.y -= this.speedY; this.x += this.speedX;
+                this.x += Math.sin(this.y * 0.01) * 0.5;
+                if (this.y < -10) { this.reset(); this.y = canvas.height; }
+            }
+            draw() {
+                ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color;
+                ctx.beginPath();
+                const t = this.size * 0.3;
+                ctx.moveTo(this.x, this.y + t);
+                ctx.bezierCurveTo(this.x, this.y, this.x - this.size, this.y, this.x - this.size, this.y + t);
+                ctx.bezierCurveTo(this.x - this.size, this.y + (this.size + t) / 2, this.x, this.y + (this.size + t) / 2, this.x, this.y + this.size);
+                ctx.bezierCurveTo(this.x, this.y + (this.size + t) / 2, this.x + this.size, this.y + (this.size + t) / 2, this.x + this.size, this.y + t);
+                ctx.bezierCurveTo(this.x + this.size, this.y, this.x, this.y, this.x, this.y + t);
+                ctx.closePath(); ctx.fill(); ctx.restore();
+            }
+        }
+
+        const hearts = Array.from({ length: 40 }, () => new Heart());
+        function animateHearts() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(h => { h.update(); h.draw(); });
+            requestAnimationFrame(animateHearts);
+        }
+        animateHearts();
+
+        // =============================================
+        // SCROLL / NAVBAR
+        // =============================================
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('bg-[#141414]/90', window.scrollY > 50);
+            navbar.classList.toggle('backdrop-blur-md', window.scrollY > 50);
+            navbar.classList.toggle('shadow-lg', window.scrollY > 50);
+        });
+
+        // =============================================
+        // MOBILE MENU
+        // =============================================
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const bar1 = document.getElementById('mb-bar1');
+        const bar2 = document.getElementById('mb-bar2');
+        const bar3 = document.getElementById('mb-bar3');
+        let menuOpen = false;
+
+        function toggleMobileMenu(force) {
+            menuOpen = (force !== undefined) ? force : !menuOpen;
+            mobileMenu.classList.toggle('hidden', !menuOpen);
+            // Animate to X
+            bar1.style.transform = menuOpen ? 'translateY(7px) rotate(45deg)' : '';
+            bar2.style.opacity   = menuOpen ? '0' : '1';
+            bar3.style.transform = menuOpen ? 'translateY(-7px) rotate(-45deg)' : '';
+        }
+
+        mobileMenuBtn.addEventListener('click', () => toggleMobileMenu());
+
+        // Close when a link is clicked
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => toggleMobileMenu(false));
+        });
+
+        // Close when scrolling
+        window.addEventListener('scroll', () => { if (menuOpen) toggleMobileMenu(false); }, { passive: true });
+
+        // =============================================
+        // TIMELINE OBSERVER
+        // =============================================
+        const timelineObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); obs.unobserve(e.target); } });
+        }, { threshold: 0.2 });
+
+        // =============================================
+        // ENVELOPE
+        // =============================================
+        const envelope = document.getElementById('envelope');
+        const tipText = document.getElementById('envelope-tip');
+        let isOpen = false;
+        envelope.addEventListener('click', (e) => {
+            if (isOpen && e.target.closest('.letter')) return;
+            isOpen = !isOpen;
+            envelope.classList.toggle('is-open', isOpen);
+            tipText.innerText = isOpen ? 'Toque novamente para fechar' : 'Toque para abrir';
+        });
+
+        // =============================================
+        // INTRO SCREEN
+        // =============================================
+        const introOverlay = document.getElementById('intro-overlay');
+        const mainBody = document.getElementById('main-body');
+
+        introOverlay.addEventListener('click', () => {
+            introOverlay.classList.add('hidden');
+            mainBody.classList.remove('overflow-hidden');
+        });
+
+        // =============================================
+        // UFC VIDEO PPV
+        // =============================================
+        const ufcVideoPlayer = document.getElementById('ufc-video-player');
+        const ufcVideoOverlay = document.getElementById('ufc-video-overlay');
+
+        if (ufcVideoOverlay && ufcVideoPlayer) {
+            ufcVideoOverlay.addEventListener('click', () => {
+                // Fade out overlay
+                ufcVideoOverlay.style.opacity = '0';
+                
+                setTimeout(() => {
+                    ufcVideoOverlay.style.display = 'none';
+                    ufcVideoPlayer.classList.remove('hidden');
+                    ufcVideoPlayer.setAttribute('controls', 'controls');
+                    ufcVideoPlayer.play();
+                }, 500);
+            });
+        }
+
+        // =============================================
+        // QUIZ LOGIC
+        // =============================================
+        let quizQuestions = [];
+        let currentQuestion = 0;
+        let quizScore = 0;
+
+        function renderQuiz() {
+            const qContainer = document.getElementById('quiz-question-container');
+            if (!qContainer) return;
+            const q = quizQuestions[currentQuestion];
+            document.getElementById('quiz-question').innerText = q.question;
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-lg bg-[#1a1a1a] hover:bg-[#2e2e2e] border border-gray-700 hover:border-netflix transition-colors text-white font-medium";
+                btn.innerText = opt;
+                btn.onclick = () => handleQuizAnswer(idx);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleQuizAnswer(idx) {
+            if (idx === quizQuestions[currentQuestion].correct) {
+                quizScore++;
+            }
+            currentQuestion++;
+            if (currentQuestion >= quizQuestions.length) {
+                showQuizResult();
+            } else {
+                renderQuiz();
+            }
+        }
+
+        function showQuizResult() {
+            document.getElementById('quiz-question-container').classList.add('hidden');
+            const res = document.getElementById('quiz-result');
+            res.classList.remove('hidden');
+            document.getElementById('quiz-result-score').innerText = `Acertaste ${quizScore} de ${quizQuestions.length} perguntas!`;
+
+            let title = "Boa!";
+            let icon = "👍";
+            if (quizScore === quizQuestions.length) { title = "Faixa Preta!"; icon = "🏆"; }
+            else if (quizScore === 0) { title = "Faixa Branca..."; icon = "😅"; }
+
+            document.getElementById('quiz-result-title').innerText = title;
+            document.getElementById('quiz-result-icon').innerText = icon;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            quizScore = 0;
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-question-container').classList.remove('hidden');
+            renderQuiz();
+        }
+
+        // =============================================
+        // BOOT
+        // =============================================
+        const config = loadConfig();
+        applyConfig(config);
+    </script>
+</body>
+
+</html>
