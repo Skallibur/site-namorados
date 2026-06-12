@@ -149,7 +149,8 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: #960c2b; /* slightly darker shade for the bottom fold */
+            background: #960c2b;
+            /* slightly darker shade for the bottom fold */
             clip-path: polygon(0 100%, 50% 60%, 100% 100%);
         }
 
@@ -342,7 +343,7 @@
     <header class="fixed top-0 w-full z-50 transition-all duration-300 z-content" id="navbar">
         <div class="container mx-auto px-6 py-4 flex items-center justify-between">
             <h1 id="nav-title" class="font-cursive text-netflix font-bold text-4xl tracking-tighter">Pedro & Lynda</h1>
-            
+
             <!-- Desktop Nav -->
             <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-300">
                 <a href="#hero" class="hover:text-white transition">Início</a>
@@ -357,7 +358,9 @@
             </nav>
 
             <div class="flex items-center gap-3">
-                <div id="nav-initials" class="w-8 h-8 rounded bg-netflix flex items-center justify-center font-bold shadow-lg text-sm">PL</div>
+                <div id="nav-initials"
+                    class="w-8 h-8 rounded bg-netflix flex items-center justify-center font-bold shadow-lg text-sm">PL
+                </div>
                 <!-- Mobile menu button -->
                 <button id="mobile-menu-btn" class="md:hidden flex flex-col gap-[5px] p-1" aria-label="Menu">
                     <span class="w-6 h-0.5 bg-white transition-all duration-300 block" id="mb-bar1"></span>
@@ -368,17 +371,18 @@
         </div>
 
         <!-- Mobile Dropdown -->
-        <div id="mobile-menu" class="md:hidden hidden bg-[#141414]/95 backdrop-blur-md border-t border-gray-800 px-6 py-4">
+        <div id="mobile-menu"
+            class="md:hidden hidden bg-[#141414]/95 backdrop-blur-md border-t border-gray-800 px-6 py-4">
             <nav class="flex flex-col gap-4 text-sm font-medium text-gray-300">
-                <a href="#hero"        class="hover:text-white transition mobile-nav-link">🏠 Início</a>
-                <a href="#counter"     class="hover:text-white transition mobile-nav-link">⏱ O Nosso Tempo</a>
-                <a href="#starmap"     class="hover:text-white transition mobile-nav-link">⭐ Sob Este Céu</a>
-                <a href="#gallery"     class="hover:text-white transition mobile-nav-link">📸 Momentos</a>
-                <a href="#timeline"    class="hover:text-white transition mobile-nav-link">📅 A Nossa História</a>
-                <a href="#fightcard"   class="hover:text-white transition mobile-nav-link">🥊 Main Event</a>
+                <a href="#hero" class="hover:text-white transition mobile-nav-link">🏠 Início</a>
+                <a href="#counter" class="hover:text-white transition mobile-nav-link">⏱ O Nosso Tempo</a>
+                <a href="#starmap" class="hover:text-white transition mobile-nav-link">⭐ Sob Este Céu</a>
+                <a href="#gallery" class="hover:text-white transition mobile-nav-link">📸 Momentos</a>
+                <a href="#timeline" class="hover:text-white transition mobile-nav-link">📅 A Nossa História</a>
+                <a href="#fightcard" class="hover:text-white transition mobile-nav-link">🥊 Main Event</a>
                 <a href="#fight-video" class="hover:text-white transition mobile-nav-link">🎬 O Nosso Combate</a>
-                <a href="#quiz"        class="hover:text-white transition mobile-nav-link">🧠 Quiz do Casal</a>
-                <a href="#letter"      class="hover:text-white transition mobile-nav-link">💌 Mensagem</a>
+                <a href="#quiz" class="hover:text-white transition mobile-nav-link">🧠 Quiz do Casal</a>
+                <a href="#letter" class="hover:text-white transition mobile-nav-link">💌 Mensagem</a>
             </nav>
         </div>
     </header>
@@ -489,23 +493,36 @@
 
     <!-- SEÇÃO BÔNUS: MAPA DAS ESTRELAS -->
     <section id="starmap" class="py-24 bg-black z-content relative border-t border-gray-900 overflow-hidden">
-        <div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_1px,transparent_1px)]" style="background-size: 40px 40px;"></div>
-        
+        <div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_1px,transparent_1px)]"
+            style="background-size: 40px 40px;"></div>
+
         <div class="container mx-auto px-6 text-center relative z-10">
-            <h3 class="text-3xl md:text-5xl font-bold mb-4 font-cursive text-white tracking-wider drop-shadow-lg">Sob este céu...</h3>
-            <p class="text-gray-400 mb-12 uppercase tracking-[0.2em] text-xs md:text-sm font-bold">O universo quando a nossa história começou</p>
-            
+            <h3 class="text-3xl md:text-5xl font-bold mb-4 font-cursive text-white tracking-wider drop-shadow-lg">Sob
+                este céu...</h3>
+            <p class="text-gray-400 mb-12 uppercase tracking-[0.2em] text-xs md:text-sm font-bold">O universo quando a
+                nossa história começou</p>
+
             <div class="max-w-xl mx-auto">
-                <div class="relative p-2 rounded-full border border-gray-800 shadow-[0_0_60px_rgba(255,255,255,0.05)] bg-[#050505] group">
-                    <img id="sm-img" src="mapa-estrelas.png" alt="Mapa das estrelas" class="w-full h-auto rounded-full mix-blend-screen opacity-90 group-hover:opacity-100 transition-opacity duration-700">
-                    <div class="absolute inset-0 rounded-full shadow-[inset_0_0_40px_rgba(0,0,0,0.8)] pointer-events-none"></div>
+                <div
+                    class="relative p-2 rounded-full border border-gray-800 shadow-[0_0_60px_rgba(255,255,255,0.05)] bg-[#050505] group">
+                    <img id="sm-img" src="mapa-estrelas.png" alt="Mapa das estrelas"
+                        class="w-full h-auto rounded-full mix-blend-screen opacity-90 group-hover:opacity-100 transition-opacity duration-700">
+                    <div
+                        class="absolute inset-0 rounded-full shadow-[inset_0_0_40px_rgba(0,0,0,0.8)] pointer-events-none">
+                    </div>
                 </div>
             </div>
-            
+
             <div class="mt-8">
-                <p id="sm-date" class="text-white text-sm md:text-base tracking-[0.3em] uppercase font-bold mb-2">24 de Abril de 2026</p>
-                <p class="text-gray-500 text-xs md:text-sm tracking-widest uppercase flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4 text-netflix" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                <p id="sm-date" class="text-white text-sm md:text-base tracking-[0.3em] uppercase font-bold mb-2">24 de
+                    Abril de 2026</p>
+                <p
+                    class="text-gray-500 text-xs md:text-sm tracking-widest uppercase flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4 text-netflix" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                            clip-rule="evenodd"></path>
+                    </svg>
                     <span id="sm-location-text">Coordenadas do Amor</span>
                 </p>
             </div>
@@ -554,7 +571,7 @@
                 <div
                     class="bg-gradient-to-r from-red-900 via-black to-red-900 py-4 text-center border-b border-netflix/30">
                     <h4 class="text-2xl font-bold text-white uppercase tracking-[0.2em]">Disputa de Cinturão</h4>
-                    <p class="text-sm text-gray-400">Categoria: Peso Pesado do Amor</p>
+                    <p class="text-sm text-gray-400">Categoria: Casal Apaixonado</p>
                 </div>
 
                 <div class="flex flex-col md:flex-row items-center justify-between p-8 gap-8">
@@ -563,7 +580,7 @@
                         <div
                             class="w-32 h-32 mx-auto rounded-full border-4 border-netflix overflow-hidden mb-4 shadow-[0_0_15px_rgba(229,9,20,0.5)]">
                             <img id="fc-img1"
-                                src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=200&auto=format&fit=crop"
+                                src="Captura de tela 2026-06-12 192346.png"
                                 class="w-full h-full object-cover">
                         </div>
                         <h5 id="fc-name1" class="text-2xl font-bold uppercase">Pedro</h5>
@@ -586,7 +603,7 @@
                         <div
                             class="w-32 h-32 mx-auto rounded-full border-4 border-romantic overflow-hidden mb-4 shadow-[0_0_15px_rgba(255,42,122,0.5)]">
                             <img id="fc-img2"
-                                src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=200&auto=format&fit=crop"
+                                src="Captura de tela 2026-06-12 192221.png"
                                 class="w-full h-full object-cover">
                         </div>
                         <h5 id="fc-name2" class="text-2xl font-bold uppercase">Lynda</h5>
@@ -606,23 +623,35 @@
     <!-- SEÇÃO BÔNUS: VÍDEO DO COMBATE -->
     <section id="fight-video" class="py-16 bg-[#050505] z-content border-t border-gray-900">
         <div class="container mx-auto px-6 text-center">
-            <div class="max-w-4xl mx-auto bg-black rounded-xl overflow-hidden shadow-[0_0_30px_rgba(229,9,20,0.2)] border border-gray-800 relative group aspect-video flex items-center justify-center">
-                
+            <div
+                class="max-w-4xl mx-auto bg-black rounded-xl overflow-hidden shadow-[0_0_30px_rgba(229,9,20,0.2)] border border-gray-800 relative group aspect-video flex items-center justify-center">
+
                 <!-- Video Element -->
-                <video id="ufc-video-player" class="w-full h-full object-cover hidden" preload="metadata" controlsList="nodownload">
+                <video id="ufc-video-player" class="w-full h-full object-cover hidden" preload="metadata"
+                    controlsList="nodownload">
                     <!-- Vídeo de exemplo - deve ser substituído pelo utilizador -->
-                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" id="ufc-video-src">
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+                        type="video/mp4" id="ufc-video-src">
                     O seu browser não suporta vídeos.
                 </video>
-                
+
                 <!-- Overlay (UFC PPV style) -->
-                <div id="ufc-video-overlay" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center transition-opacity duration-500 z-10 cursor-pointer bg-[url('https://images.unsplash.com/photo-1599058917212-97d14ad43b4e?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center bg-blend-overlay">
-                    <div class="text-netflix text-xs md:text-sm font-bold tracking-[0.3em] uppercase mb-4 border border-netflix px-3 py-1 rounded bg-black/50 backdrop-blur-sm">Ao Vivo - Pay-Per-View</div>
-                    <h3 class="text-3xl md:text-5xl font-bold text-white mb-8 uppercase italic tracking-wider shadow-black drop-shadow-[0_5px_5px_rgba(0,0,0,1)]">O Nosso Combate</h3>
-                    <button id="ufc-play-btn" class="w-24 h-24 bg-netflix rounded-full flex items-center justify-center hover:scale-110 hover:bg-red-700 transition-all shadow-[0_0_30px_rgba(229,9,20,0.8)]">
-                        <svg class="w-12 h-12 text-white ml-2 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <div id="ufc-video-overlay"
+                    class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center transition-opacity duration-500 z-10 cursor-pointer bg-[url('https://images.unsplash.com/photo-1599058917212-97d14ad43b4e?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center bg-blend-overlay">
+                    <div
+                        class="text-netflix text-xs md:text-sm font-bold tracking-[0.3em] uppercase mb-4 border border-netflix px-3 py-1 rounded bg-black/50 backdrop-blur-sm">
+                        Ao Vivo - Pay-Per-View</div>
+                    <h3
+                        class="text-3xl md:text-5xl font-bold text-white mb-8 uppercase italic tracking-wider shadow-black drop-shadow-[0_5px_5px_rgba(0,0,0,1)]">
+                        O Nosso Combate</h3>
+                    <button id="ufc-play-btn"
+                        class="w-24 h-24 bg-netflix rounded-full flex items-center justify-center hover:scale-110 hover:bg-red-700 transition-all shadow-[0_0_30px_rgba(229,9,20,0.8)]">
+                        <svg class="w-12 h-12 text-white ml-2 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
                     </button>
-                    <p class="text-gray-400 text-sm mt-6 font-bold tracking-widest uppercase animate-pulse">Toque para Assistir</p>
+                    <p class="text-gray-400 text-sm mt-6 font-bold tracking-widest uppercase animate-pulse">Toque para
+                        Assistir</p>
                 </div>
             </div>
         </div>
@@ -933,7 +962,7 @@
                 const now = new Date();
                 let isFuture = false;
                 let diff = now - startDate;
-                
+
                 if (isNaN(diff)) {
                     elYears.innerText = "00";
                     elMonths.innerText = "00";
@@ -1076,7 +1105,7 @@
             mobileMenu.classList.toggle('hidden', !menuOpen);
             // Animate to X
             bar1.style.transform = menuOpen ? 'translateY(7px) rotate(45deg)' : '';
-            bar2.style.opacity   = menuOpen ? '0' : '1';
+            bar2.style.opacity = menuOpen ? '0' : '1';
             bar3.style.transform = menuOpen ? 'translateY(-7px) rotate(-45deg)' : '';
         }
 
@@ -1131,7 +1160,7 @@
             ufcVideoOverlay.addEventListener('click', () => {
                 // Fade out overlay
                 ufcVideoOverlay.style.opacity = '0';
-                
+
                 setTimeout(() => {
                     ufcVideoOverlay.style.display = 'none';
                     ufcVideoPlayer.classList.remove('hidden');
