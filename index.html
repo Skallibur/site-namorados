@@ -354,6 +354,7 @@
             <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-300">
                 <a href="#hero" class="hover:text-white transition">Início</a>
                 <a href="#counter" class="hover:text-white transition">O Nosso Tempo</a>
+                <a href="#soundtrack" class="hover:text-white transition">Banda Sonora</a>
                 <a href="#starmap" class="hover:text-white transition">Céu</a>
                 <a href="#gallery" class="hover:text-white transition">Momentos</a>
                 <a href="#timeline" class="hover:text-white transition">História</a>
@@ -382,6 +383,7 @@
             <nav class="flex flex-col gap-4 text-sm font-medium text-gray-300">
                 <a href="#hero" class="hover:text-white transition mobile-nav-link">🏠 Início</a>
                 <a href="#counter" class="hover:text-white transition mobile-nav-link">⏱ O Nosso Tempo</a>
+                <a href="#soundtrack" class="hover:text-white transition mobile-nav-link">🎵 Banda Sonora</a>
                 <a href="#starmap" class="hover:text-white transition mobile-nav-link">⭐ Sob Este Céu</a>
                 <a href="#gallery" class="hover:text-white transition mobile-nav-link">📸 Momentos</a>
                 <a href="#timeline" class="hover:text-white transition mobile-nav-link">📅 A Nossa História</a>
@@ -494,6 +496,80 @@
             <div class="text-center mt-12 text-sm text-gray-500">
                 Desde o primeiro play: <span id="counter-since-label" class="text-gray-300">24 de Abril de 2026</span>
             </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO BANDA SONORA (SPOTIFY) -->
+    <section id="soundtrack" class="py-24 bg-[#121212] z-content relative">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold mb-4 text-white">A Nossa Banda Sonora</h3>
+                <p class="text-gray-400">A música que embala a nossa história.</p>
+            </div>
+
+            <div class="max-w-md mx-auto bg-[#181818] rounded-xl p-6 shadow-2xl border border-gray-800 transition transform hover:scale-[1.02] duration-500">
+                <!-- Album Art -->
+                <div class="w-full aspect-square rounded-md overflow-hidden mb-6 shadow-lg relative group">
+                    <img src="photo_2026-06-12_13-05-50.jpg" alt="Capa do Álbum" class="w-full h-full object-cover">
+                    <!-- Spotify Logo -->
+                    <div class="absolute top-4 left-4">
+                        <svg viewBox="0 0 24 24" class="w-8 h-8 text-[#1DB954]" fill="currentColor">
+                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.299 1.021zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.84.24 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.18-1.2-.181-1.38-.781-.18-.6.18-1.2.78-1.38 4.2-1.26 11.28-1.02 15.72 1.62.539.3.719 1.02.419 1.56-.239.54-.959.72-1.619.36z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Title & Artist -->
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h4 class="text-xl font-bold text-white mb-1">Até Que Durou</h4>
+                        <p class="text-sm text-gray-400">Péricles</p>
+                    </div>
+                    <!-- Heart Icon -->
+                    <button class="text-[#1DB954]">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mb-6">
+                    <div class="w-full bg-gray-600 rounded-full h-1.5 mb-2 relative cursor-pointer" id="progress-container">
+                        <div class="bg-white hover:bg-[#1DB954] h-1.5 rounded-full relative w-0 transition-all duration-300" id="progress-bar">
+                            <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-400 font-medium">
+                        <span id="time-current">0:00</span>
+                        <span id="time-total">0:00</span>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex justify-between items-center px-2">
+                    <button class="text-gray-400 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+                    </button>
+                    <button class="text-white hover:text-gray-300 transition">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                    </button>
+                    <!-- PLAY/PAUSE BUTTON -->
+                    <button id="spotify-play-btn" class="w-14 h-14 bg-white rounded-full flex items-center justify-center hover:scale-105 transition transform shadow-lg text-black">
+                        <!-- Play Icon (Default) -->
+                        <svg id="icon-play" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <!-- Pause Icon (Hidden) -->
+                        <svg id="icon-pause" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                    <button class="text-white hover:text-gray-300 transition">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                    </button>
+                    <button class="text-gray-400 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Hidden YouTube Player -->
+            <div id="youtube-player-container" class="hidden"></div>
         </div>
     </section>
 
@@ -1314,6 +1390,104 @@
             document.getElementById('quiz-result').classList.add('hidden');
             document.getElementById('quiz-question-container').classList.remove('hidden');
             renderQuiz();
+        }
+
+        // =============================================
+        // SPOTIFY PLAYER (YOUTUBE API)
+        // =============================================
+        let ytPlayer;
+        let isPlaying = false;
+        let progressInterval;
+
+        // Load YouTube API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('youtube-player-container', {
+                height: '0',
+                width: '0',
+                videoId: 'dFROHtBCkU0',
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0,
+                    'modestbranding': 1,
+                    'playsinline': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            const playBtn = document.getElementById('spotify-play-btn');
+            if(playBtn) {
+                playBtn.addEventListener('click', () => {
+                    if (isPlaying) {
+                        ytPlayer.pauseVideo();
+                    } else {
+                        ytPlayer.playVideo();
+                    }
+                });
+            }
+        }
+
+        function onPlayerStateChange(event) {
+            const iconPlay = document.getElementById('icon-play');
+            const iconPause = document.getElementById('icon-pause');
+            if (event.data == YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                iconPlay.classList.add('hidden');
+                iconPause.classList.remove('hidden');
+                
+                // Update total time
+                const duration = ytPlayer.getDuration();
+                document.getElementById('time-total').innerText = formatTime(duration);
+                
+                // Start progress updates
+                progressInterval = setInterval(updateProgressBar, 500);
+            } else {
+                isPlaying = false;
+                iconPlay.classList.remove('hidden');
+                iconPause.classList.add('hidden');
+                clearInterval(progressInterval);
+            }
+        }
+
+        function updateProgressBar() {
+            if(!ytPlayer || !isPlaying) return;
+            const currentTime = ytPlayer.getCurrentTime();
+            const duration = ytPlayer.getDuration();
+            const percent = (currentTime / duration) * 100;
+            
+            document.getElementById('progress-bar').style.width = percent + '%';
+            document.getElementById('time-current').innerText = formatTime(currentTime);
+        }
+
+        function formatTime(time) {
+            if(!time) return "0:00";
+            const minutes = Math.floor(time / 60);
+            const seconds = Math.floor(time % 60);
+            return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+        }
+
+        // Click on progress bar to seek
+        const progressContainer = document.getElementById('progress-container');
+        if(progressContainer) {
+            progressContainer.addEventListener('click', (e) => {
+                if(!ytPlayer || !ytPlayer.getDuration) return;
+                const rect = progressContainer.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const percent = clickX / rect.width;
+                const seekToTime = percent * ytPlayer.getDuration();
+                ytPlayer.seekTo(seekToTime, true);
+            });
         }
 
         // =============================================
