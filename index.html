@@ -522,8 +522,8 @@
                 <!-- Title & Artist -->
                 <div class="flex justify-between items-center mb-6">
                     <div>
-                        <h4 class="text-xl font-bold text-white mb-1">Até Que Durou</h4>
-                        <p class="text-sm text-gray-400">Péricles</p>
+                        <h4 class="text-xl font-bold text-white mb-1">Sem Explicação</h4>
+                        <p class="text-sm text-gray-400">Vitor e Luan, Marília Mendonça</p>
                     </div>
                     <!-- Heart Icon -->
                     <button class="text-[#1DB954]">
@@ -569,7 +569,9 @@
             </div>
             
             <!-- Hidden YouTube Player -->
-            <div id="youtube-player-container" class="hidden"></div>
+            <div class="absolute opacity-0 pointer-events-none" style="width: 1px; height: 1px; overflow: hidden; top: -9999px; left: -9999px;">
+                <div id="youtube-player-container"></div>
+            </div>
         </div>
     </section>
 
@@ -1407,8 +1409,8 @@
 
         function onYouTubeIframeAPIReady() {
             ytPlayer = new YT.Player('youtube-player-container', {
-                height: '0',
-                width: '0',
+                height: '1',
+                width: '1',
                 videoId: 'dFROHtBCkU0',
                 playerVars: {
                     'autoplay': 0,
