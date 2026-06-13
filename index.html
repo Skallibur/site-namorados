@@ -93,9 +93,15 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            height: 350px;
+            height: 250px; /* Reduced for mobile aspect ratio */
             cursor: pointer;
             perspective: 1000px;
+        }
+
+        @media (min-width: 768px) {
+            .envelope-wrapper {
+                height: 350px;
+            }
         }
 
         .envelope {
@@ -399,7 +405,7 @@
                         EXCLUSIVO</span>
                 </div>
                 <h2 id="hero-title"
-                    class="font-cursive text-6xl md:text-8xl lg:text-9xl mb-4 text-white drop-shadow-2xl">Pedro e Lynda
+                    class="font-cursive text-5xl sm:text-6xl md:text-8xl lg:text-9xl mb-4 text-white drop-shadow-2xl">Pedro e Lynda
                 </h2>
                 <div
                     class="flex items-center space-x-4 text-sm md:text-base text-gray-300 mb-6 font-semibold drop-shadow-md">
