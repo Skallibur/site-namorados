@@ -61,8 +61,14 @@
 
         .hero-bg {
             background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-position: center top;
+        }
+
+        @media (min-width: 768px) {
+            .hero-bg {
+                background-attachment: fixed;
+                background-position: center;
+            }
         }
 
         .polaroid {
@@ -93,7 +99,8 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            height: 250px; /* Reduced for mobile aspect ratio */
+            height: 250px;
+            /* Reduced for mobile aspect ratio */
             cursor: pointer;
             perspective: 1000px;
         }
@@ -348,7 +355,8 @@
     <!-- Header / Navbar -->
     <header class="fixed top-0 w-full z-50 transition-all duration-300 z-content" id="navbar">
         <div class="container mx-auto px-6 py-4 flex items-center justify-between">
-            <h1 id="nav-title" class="font-cursive text-netflix font-bold text-2xl md:text-4xl tracking-tighter">Pedro & Lynda</h1>
+            <h1 id="nav-title" class="font-cursive text-netflix font-bold text-2xl md:text-4xl tracking-tighter">Pedro &
+                Lynda</h1>
 
             <!-- Desktop Nav -->
             <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-300">
@@ -407,7 +415,8 @@
                         EXCLUSIVO</span>
                 </div>
                 <h2 id="hero-title"
-                    class="font-cursive text-4xl sm:text-5xl md:text-8xl lg:text-9xl mb-4 text-white drop-shadow-2xl">Pedro e Lynda
+                    class="font-cursive text-4xl sm:text-5xl md:text-8xl lg:text-9xl mb-4 text-white drop-shadow-2xl">
+                    Pedro e Lynda
                 </h2>
                 <div
                     class="flex items-center space-x-4 text-sm md:text-base text-gray-300 mb-6 font-semibold drop-shadow-md">
@@ -507,14 +516,16 @@
                 <p class="text-gray-400">A música que embala a nossa história.</p>
             </div>
 
-            <div class="max-w-md mx-auto bg-[#181818] rounded-xl p-6 shadow-2xl border border-gray-800 transition transform hover:scale-[1.02] duration-500">
+            <div
+                class="max-w-md mx-auto bg-[#181818] rounded-xl p-6 shadow-2xl border border-gray-800 transition transform hover:scale-[1.02] duration-500">
                 <!-- Album Art -->
                 <div class="w-full aspect-square rounded-md overflow-hidden mb-6 shadow-lg relative group">
                     <img src="photo_2026-06-12_13-05-50.jpg" alt="Capa do Álbum" class="w-full h-full object-cover">
                     <!-- Spotify Logo -->
                     <div class="absolute top-4 left-4">
                         <svg viewBox="0 0 24 24" class="w-8 h-8 text-[#1DB954]" fill="currentColor">
-                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.299 1.021zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.84.24 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.18-1.2-.181-1.38-.781-.18-.6.18-1.2.78-1.38 4.2-1.26 11.28-1.02 15.72 1.62.539.3.719 1.02.419 1.56-.239.54-.959.72-1.619.36z"/>
+                            <path
+                                d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.299 1.021zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.84.24 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.18-1.2-.181-1.38-.781-.18-.6.18-1.2.78-1.38 4.2-1.26 11.28-1.02 15.72 1.62.539.3.719 1.02.419 1.56-.239.54-.959.72-1.619.36z" />
                         </svg>
                     </div>
                 </div>
@@ -527,15 +538,22 @@
                     </div>
                     <!-- Heart Icon -->
                     <button class="text-[#1DB954]">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
                     </button>
                 </div>
 
                 <!-- Progress Bar -->
                 <div class="mb-6">
-                    <div class="w-full bg-gray-600 rounded-full h-1.5 mb-2 relative cursor-pointer" id="progress-container">
-                        <div class="bg-white hover:bg-[#1DB954] h-1.5 rounded-full relative w-0 transition-all duration-300" id="progress-bar">
-                            <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow"></div>
+                    <div class="w-full bg-gray-600 rounded-full h-1.5 mb-2 relative cursor-pointer"
+                        id="progress-container">
+                        <div class="bg-white hover:bg-[#1DB954] h-1.5 rounded-full relative w-0 transition-all duration-300"
+                            id="progress-bar">
+                            <div
+                                class="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow">
+                            </div>
                         </div>
                     </div>
                     <div class="flex justify-between text-xs text-gray-400 font-medium">
@@ -547,29 +565,44 @@
                 <!-- Controls -->
                 <div class="flex justify-between items-center px-2">
                     <button class="text-gray-400 hover:text-white transition">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z" />
+                        </svg>
                     </button>
                     <button class="text-white hover:text-gray-300 transition">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                        </svg>
                     </button>
                     <!-- PLAY/PAUSE BUTTON -->
-                    <button id="spotify-play-btn" class="w-14 h-14 bg-white rounded-full flex items-center justify-center hover:scale-105 transition transform shadow-lg text-black">
+                    <button id="spotify-play-btn"
+                        class="w-14 h-14 bg-white rounded-full flex items-center justify-center hover:scale-105 transition transform shadow-lg text-black">
                         <!-- Play Icon (Default) -->
-                        <svg id="icon-play" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <svg id="icon-play" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
                         <!-- Pause Icon (Hidden) -->
-                        <svg id="icon-pause" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                        <svg id="icon-pause" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                        </svg>
                     </button>
                     <button class="text-white hover:text-gray-300 transition">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                        </svg>
                     </button>
                     <button class="text-gray-400 hover:text-white transition">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
+                        </svg>
                     </button>
                 </div>
             </div>
-            
+
             <!-- Hidden YouTube Player -->
-            <div class="absolute opacity-0 pointer-events-none" style="width: 1px; height: 1px; overflow: hidden; top: -9999px; left: -9999px;">
+            <div class="absolute opacity-0 pointer-events-none"
+                style="width: 1px; height: 1px; overflow: hidden; top: -9999px; left: -9999px;">
                 <div id="youtube-player-container"></div>
             </div>
         </div>
@@ -1429,7 +1462,7 @@
 
         function onPlayerReady(event) {
             const playBtn = document.getElementById('spotify-play-btn');
-            if(playBtn) {
+            if (playBtn) {
                 playBtn.addEventListener('click', () => {
                     if (isPlaying) {
                         ytPlayer.pauseVideo();
@@ -1447,11 +1480,11 @@
                 isPlaying = true;
                 iconPlay.classList.add('hidden');
                 iconPause.classList.remove('hidden');
-                
+
                 // Update total time
                 const duration = ytPlayer.getDuration();
                 document.getElementById('time-total').innerText = formatTime(duration);
-                
+
                 // Start progress updates
                 progressInterval = setInterval(updateProgressBar, 500);
             } else {
@@ -1463,17 +1496,17 @@
         }
 
         function updateProgressBar() {
-            if(!ytPlayer || !isPlaying) return;
+            if (!ytPlayer || !isPlaying) return;
             const currentTime = ytPlayer.getCurrentTime();
             const duration = ytPlayer.getDuration();
             const percent = (currentTime / duration) * 100;
-            
+
             document.getElementById('progress-bar').style.width = percent + '%';
             document.getElementById('time-current').innerText = formatTime(currentTime);
         }
 
         function formatTime(time) {
-            if(!time) return "0:00";
+            if (!time) return "0:00";
             const minutes = Math.floor(time / 60);
             const seconds = Math.floor(time % 60);
             return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
@@ -1481,9 +1514,9 @@
 
         // Click on progress bar to seek
         const progressContainer = document.getElementById('progress-container');
-        if(progressContainer) {
+        if (progressContainer) {
             progressContainer.addEventListener('click', (e) => {
-                if(!ytPlayer || !ytPlayer.getDuration) return;
+                if (!ytPlayer || !ytPlayer.getDuration) return;
                 const rect = progressContainer.getBoundingClientRect();
                 const clickX = e.clientX - rect.left;
                 const percent = clickX / rect.width;
